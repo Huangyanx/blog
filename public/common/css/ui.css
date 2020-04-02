@@ -1,0 +1,74 @@
+
+#container {
+    position: absolute;
+    top: 200px;
+    left: 25%;
+  margin: 0 auto;
+  width: 460px;
+  padding: 2em;
+  background: #DCDDDF;
+  
+  -webkit-box-shadow: rgba(0, 0, 0, 0.0976562) 1px 0px 1px,
+                      rgba(0, 0, 0, 0.046875) 1px -1px 0px,
+                      rgba(0, 0, 0, 0.0976562) 0px 1px 0px,
+                      rgba(0, 0, 0, 0.0976562) -1px 0px 1px,
+                      rgba(0, 0, 0, 0.046875) -1px -1px 0px,
+                      rgba(0, 0, 0, 0.148438) 0px 3px 3px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.0976562) 1px 0px 1px,
+                   rgba(0, 0, 0, 0.046875) 1px -1px 0px,
+                   rgba(0, 0, 0, 0.0976562) 0px 1px 0px,
+                   rgba(0, 0, 0, 0.0976562) -1px 0px 1px,
+                   rgba(0, 0, 0, 0.046875) -1px -1px 0px,
+                   rgba(0, 0, 0, 0.148438) 0px 3px 3px;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.65, rgba(216, 190, 209,0.55)), color-stop(1, rgba(255,255,255,1)));
+  background: -moz-linear-gradient(rgba(216, 190, 209,0.55) 65%, rgba(255,255,255,1) 100%);
+    display: none;
+}
+.process-close {
+    position: absolute;
+    right: 0px;
+    top: 9px;
+    font-weight: 700;
+    font-size: 18px;
+    color: #4e143e;
+    cursor: pointer;
+    width: 40px;
+    text-align: center;
+}
+.content {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+::selection {
+  background: #9bdd62;
+  color: rgba(255, 255, 255, 0.847656);
+}
+
+::-moz-selection {
+  color: #fff;
+  color: rgba(255, 255, 255, 0.847656);
+  background: #9bdd62;
+}
+
+.content p{
+  color: #555;
+  font-size: 1.4em;
+  line-height: 1.3em;
+}
+
+.content p.small {
+  font-size: 1.1em;
+}
+
+.content h1 {
+  font-size: 2.5em;
+  color: rgba(0,0,0,0.6);
+  text-shadow: rgba(255,255,255, 0.9) 0 1px 0px;
+  font-weight: bold;
+  
+}
+.ui-progress-bar {
+  margin-top: 3em;
+  margin-bottom: 3em;
+}

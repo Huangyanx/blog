@@ -1,0 +1,102 @@
+.list {
+    width: 100%;
+    border-spacing: 0px;
+    color: #999;
+}
+
+.list td,
+.list th {
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.list th {
+    line-height: 24px;
+    height: 40px;
+    font-weight: bold;
+    border: none;
+    background: none;
+    border-bottom:1px solid #DBCFCF;;
+    /*text-align: center;*/
+
+}
+
+.list td {
+    line-height: 30px;
+}
+
+
+.name {
+    padding-left: 10px;
+}
+
+.inner {
+    display: none;
+}
+
+.inner.open {
+    display: table-row;
+}
+
+.switch, .ico,.checkbox {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-image: url("./img/bootstrap.png");
+    *background-image: url("./img/bootstrap.gif");
+    vertical-align: text-top;
+}
+.checkbox {
+    background-position: -5px -5px;
+    top: -5px;
+}
+
+.leaf .ico {
+    background-position: -146px -43px;
+}
+
+.outer .ico {
+    background-position: -147px 0;
+}
+
+.outer.open .ico {
+    background-position: -148px -21px;
+}
+
+.outer .switch {
+    background-position: -130px -1px;
+}
+
+.leaf .switch {
+    background-position: -90px -22px;
+}
+
+.outer.open .switch {
+    background-position: -109px 0px;
+}
+
+.list .leaf:last-child .switch {
+    background-position: -85px -23px;
+}
+
+#listTable > tbody > tr:first-child {
+    background-position: -74px 0;
+}
+.checkbox.checked{
+    background-position: -24px -5px;
+}
+
+.text-indent {
+    display: inline-block;
+    width: 16px;
+}
+
+.outer.open > td,
+#listTable > tbody > tr > td {
+    border-bottom: 1px solid #FCF3F3;
+}
+
+tr.outer.focus,tr.outer:hover,
+tr.leaf.focus,tr.leaf:hover{
+    background: #f9f7f7;
+}
