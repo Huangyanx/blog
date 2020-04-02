@@ -1,0 +1,88 @@
+<?php include_once Vback."/public/header.html";?>
+
+    <section class="wrapper">
+    <div class="form-w3layouts">
+        <!-- page start-->
+        <!-- page start-->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                       添加表
+                    </header>
+                    <div class="panel-body">
+
+                        <form class="form-horizontal bucket-form addform" method="post" action="index.php?c=back&a=savetable" onsubmit="return checkform()">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">名称</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group m-bot15">
+                                        <input type="text" class="form-control name" name="name" required >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">表名</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group m-bot15">
+                                        <input type="text" class="form-control tableName" name="tableName" placeholder="表名只能有字母或者数字组成" required >
+                                    </div>
+                                </div>
+                                <div class="col-sm-3"><span class="red">*</span>表名只能有字母或者数字组成 </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">状态</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group m-bot15">
+                                        <select class="form-control status" name="status">
+                                            <option value="1" selected="selected">正常</option>
+                                            <option value="2">禁用</option>
+                                            <option value="3">删除</option>
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3"></label>
+                                <div class="col-lg-3">
+                                    <div class="input-group m-bot15">
+                                        <input type="submit" class="form-control btn-success add-btn" value="提交">
+                                        <input type="hidden" name="action" value="add">
+                                        <input type="hidden" name="page" value="addtable">
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="input-group m-bot15">
+                                        <a  class="btn btn-default form-control" href="javascript:history.back(1);">返回</a>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- page end-->
+    </div>
+</section>
+<?php include_once Vback."/public/footer.html";?>
+<script>
+    function checkform() {
+        var tableName=$('.tableName').val();
+        var reg = /^(\w+)$/;
+        var r = tableName.match(reg);
+        if(r && $('.name').val()!==''){
+            return true;
+        }
+        return false;
+    }
+</script>
+
+

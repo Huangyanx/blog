@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>批量处理数据</title>
+    <link rel="stylesheet" href="/public/back/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?=PUBLIC_s?>/common/css/preview.css">
+</head>
+<body>
+<?php include_once "header.html"; ?>
+    <div class="main">
+        <h1>批量处理数据</h1>
+        <div class="content">
+            <div class="">
+                <h2>一、将一张表分为两张表</h2>
+                <form action="index.php?c=datas&a=one_table_to_two" class="create_form" onsubmit="return false">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label col-lg-3">表1（原来的表）</label>
+                        <div class="col-sm-6 addtype">
+                           <input name="oldtable" class="form-control oldtable1" value="file" >
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label col-lg-3">表1的字段</label>
+                        <div class="col-sm-6 addtype">
+                            <textarea name="oldfield" class="form-control oldfield1" >
+                                <?php
+                                    $glue='';
+                                     foreach($arr as $val){
+                                        echo $glue.$val;
+                                        $glue='、';
+                                     }
+                                ?>
+
+                            </textarea>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label col-lg-3">表2（新表）</label>
+                        <div class="col-sm-6 addtype">
+                            <input name="newtable" value="article"  class="form-control" >
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label col-lg-3">表2（字段）</label>
+                        <div class="col-sm-6 addtype">
+                            <div class="table-responsive">
+                                <table class="table table-striped new-field-table">
+                                    <tr>
+                                        <th>表单提示文字</th>
+                                        <th>数据字段名</th>
+                                        <th>数据类型</th>
+                                        <th>字段长度</th>
+                                        <th>操作</th>
+                                    </tr>
+
+                                    <tr>
+                                        <td><input name="tips[]" value="所属类型"></td>
+                                        <td><input name="name[]" value="type"></td>
+                                        <td>
+                                            <select class="column_type" name="field_type[]">
+                                                <option>INT</option><option>VARCHAR</option><option>TEXT</option><option>DATE</option>
+                                                <optgroup label="NUMERIC"><option>TINYINT</option><option>SMALLINT</option><option>MEDIUMINT</option><option>INT</option><option>BIGINT</option>
+                                                    <option disabled="disabled">-</option><option>DECIMAL</option><option>FLOAT</option><option>DOUBLE</option><option>REAL</option>
+                                                    <option disabled="disabled">-</option><option>BIT</option><option>BOOLEAN</option><option>SERIAL</option></optgroup>
+                                                <optgroup label="DATE and TIME"><option>DATE</option><option>DATETIME</option><option>TIMESTAMP</option><option>TIME</option>
+                                                    <option>YEAR</option></optgroup><optgroup label="STRING"><option>CHAR</option><option>VARCHAR</option>
+                                                <option disabled="disabled">-</option><option>TINYTEXT</option><option>TEXT</option><option>MEDIUMTEXT</option>
+                                                <option>LONGTEXT</option><option disabled="disabled">-</option><option>BINARY</option><option>VARBINARY</option>
+                                                <option disabled="disabled">-</option><option>TINYBLOB</option><option>MEDIUMBLOB</option><option>BLOB</option>
+                                                <option>LONGBLOB</option><option disabled="disabled">-</option><option>ENUM</option><option>SET</option></optgroup>
+                                                <optgroup label="SPATIAL"><option>GEOMETRY</option><option>POINT</option><option>LINESTRING</option><option>POLYGON</option>
+                                                    <option>MULTIPOINT</option><option>MULTILINESTRING</option><option>MULTIPOLYGON</option><option>GEOMETRYCOLLECTION</option>
+                                                </optgroup>    </select>
+                                        </td>
+                                        <td><input name="length[]" value="5"></td>
+                                        <td><a href="javascript:;" class=" dele-field btn-danger">删除</a> </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input name="tips[]" value="标题"></td>
+                                        <td><input name="name[]" value="title"></td>
+                                        <td>
+                                            <select class="column_type" name="field_type[]">
+                                                <option>INT</option><option selected="selected">VARCHAR</option><option>TEXT</option><option>DATE</option>
+                                                <optgroup label="NUMERIC"><option>TINYINT</option><option>SMALLINT</option><option>MEDIUMINT</option><option>INT</option><option>BIGINT</option>
+                                                    <option disabled="disabled">-</option><option>DECIMAL</option><option>FLOAT</option><option>DOUBLE</option><option>REAL</option>
+                                                    <option disabled="disabled">-</option><option>BIT</option><option>BOOLEAN</option><option>SERIAL</option></optgroup>
+                                                <optgroup label="DATE and TIME"><option>DATE</option><option>DATETIME</option><option>TIMESTAMP</option><option>TIME</option>
+                                                    <option>YEAR</option></optgroup><optgroup label="STRING"><option>CHAR</option><option>VARCHAR</option>
+                                                <option disabled="disabled">-</option><option>TINYTEXT</option><option>TEXT</option><option>MEDIUMTEXT</option>
+                                                <option>LONGTEXT</option><option disabled="disabled">-</option><option>BINARY</option><option>VARBINARY</option>
+                                                <option disabled="disabled">-</option><option>TINYBLOB</option><option>MEDIUMBLOB</option><option>BLOB</option>
+                                                <option>LONGBLOB</option><option disabled="disabled">-</option><option>ENUM</option><option>SET</option></optgroup>
+                                                <optgroup label="SPATIAL"><option>GEOMETRY</option><option>POINT</option><option>LINESTRING</option><option>POLYGON</option>
+                                                    <option>MULTIPOINT</option><option>MULTILINESTRING</option><option>MULTIPOLYGON</option><option>GEOMETRYCOLLECTION</option>
+                                                </optgroup>    </select>
+                                        </td>
+                                        <td><input name="length[]" value="50"></td>
+                                        <td><a href="javascript:;" class=" dele-field btn-danger">删除</a> </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input name="tips[]" value="作者"></td>
+                                        <td><input name="name[]" value="author"></td>
+                                        <td>
+                                            <select class="column_type" name="field_type[]">
+                                                <option>INT</option><option selected="selected">VARCHAR</option><option>TEXT</option><option>DATE</option>
+                                                <optgroup label="NUMERIC"><option>TINYINT</option><option>SMALLINT</option><option>MEDIUMINT</option><option>INT</option><option>BIGINT</option>
+                                                    <option disabled="disabled">-</option><option>DECIMAL</option><option>FLOAT</option><option>DOUBLE</option><option>REAL</option>
+                                                    <option disabled="disabled">-</option><option>BIT</option><option>BOOLEAN</option><option>SERIAL</option></optgroup>
+                                                <optgroup label="DATE and TIME"><option>DATE</option><option>DATETIME</option><option>TIMESTAMP</option><option>TIME</option>
+                                                    <option>YEAR</option></optgroup><optgroup label="STRING"><option>CHAR</option><option>VARCHAR</option>
+                                                <option disabled="disabled">-</option><option>TINYTEXT</option><option>TEXT</option><option>MEDIUMTEXT</option>
+                                                <option>LONGTEXT</option><option disabled="disabled">-</option><option>BINARY</option><option>VARBINARY</option>
+                                                <option disabled="disabled">-</option><option>TINYBLOB</option><option>MEDIUMBLOB</option><option>BLOB</option>
+                                                <option>LONGBLOB</option><option disabled="disabled">-</option><option>ENUM</option><option>SET</option></optgroup>
+                                                <optgroup label="SPATIAL"><option>GEOMETRY</option><option>POINT</option><option>LINESTRING</option><option>POLYGON</option>
+                                                    <option>MULTIPOINT</option><option>MULTILINESTRING</option><option>MULTIPOLYGON</option><option>GEOMETRYCOLLECTION</option>
+                                                </optgroup>    </select>
+                                        </td>
+                                        <td><input name="length[]" value="20"></td>
+                                        <td><a href="javascript:;" class=" dele-field btn-danger">删除</a> </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input name="tips[]" value="缩略图"></td>
+                                        <td><input name="name[]" value="upimg"></td>
+                                        <td>
+                                            <select class="column_type" name="field_type[]">
+                                                <option>INT</option><option selected="selected">VARCHAR</option><option>TEXT</option><option>DATE</option>
+                                                <optgroup label="NUMERIC"><option>TINYINT</option><option>SMALLINT</option><option>MEDIUMINT</option><option>INT</option><option>BIGINT</option>
+                                                    <option disabled="disabled">-</option><option>DECIMAL</option><option>FLOAT</option><option>DOUBLE</option><option>REAL</option>
+                                                    <option disabled="disabled">-</option><option>BIT</option><option>BOOLEAN</option><option>SERIAL</option></optgroup>
+                                                <optgroup label="DATE and TIME"><option>DATE</option><option>DATETIME</option><option>TIMESTAMP</option><option>TIME</option>
+                                                    <option>YEAR</option></optgroup><optgroup label="STRING"><option>CHAR</option><option>VARCHAR</option>
+                                                <option disabled="disabled">-</option><option>TINYTEXT</option><option>TEXT</option><option>MEDIUMTEXT</option>
+                                                <option>LONGTEXT</option><option disabled="disabled">-</option><option>BINARY</option><option>VARBINARY</option>
+                                                <option disabled="disabled">-</option><option>TINYBLOB</option><option>MEDIUMBLOB</option><option>BLOB</option>
+                                                <option>LONGBLOB</option><option disabled="disabled">-</option><option>ENUM</option><option>SET</option></optgroup>
+                                                <optgroup label="SPATIAL"><option>GEOMETRY</option><option>POINT</option><option>LINESTRING</option><option>POLYGON</option>
+                                                    <option>MULTIPOINT</option><option>MULTILINESTRING</option><option>MULTIPOLYGON</option><option>GEOMETRYCOLLECTION</option>
+                                                </optgroup>    </select>
+                                        </td>
+                                        <td><input name="length[]" value="25"></td>
+                                        <td><a href="javascript:;" class=" dele-field btn-danger">删除</a> </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input name="tips[]" value="浏览次数"></td>
+                                        <td><input name="name[]" value="hits"></td>
+                                        <td>
+                                            <select class="column_type" name="field_type[]">
+                                                <option selected="selected">INT</option><option>VARCHAR</option><option>TEXT</option><option>DATE</option>
+                                                <optgroup label="NUMERIC"><option>TINYINT</option><option>SMALLINT</option><option>MEDIUMINT</option><option>INT</option><option>BIGINT</option>
+                                                    <option disabled="disabled">-</option><option>DECIMAL</option><option>FLOAT</option><option>DOUBLE</option><option>REAL</option>
+                                                    <option disabled="disabled">-</option><option>BIT</option><option>BOOLEAN</option><option>SERIAL</option></optgroup>
+                                                <optgroup label="DATE and TIME"><option>DATE</option><option>DATETIME</option><option>TIMESTAMP</option><option>TIME</option>
+                                                    <option>YEAR</option></optgroup><optgroup label="STRING"><option>CHAR</option><option>VARCHAR</option>
+                                                <option disabled="disabled">-</option><option>TINYTEXT</option><option>TEXT</option><option>MEDIUMTEXT</option>
+                                                <option>LONGTEXT</option><option disabled="disabled">-</option><option>BINARY</option><option>VARBINARY</option>
+                                                <option disabled="disabled">-</option><option>TINYBLOB</option><option>MEDIUMBLOB</option><option>BLOB</option>
+                                                <option>LONGBLOB</option><option disabled="disabled">-</option><option>ENUM</option><option>SET</option></optgroup>
+                                                <optgroup label="SPATIAL"><option>GEOMETRY</option><option>POINT</option><option>LINESTRING</option><option>POLYGON</option>
+                                                    <option>MULTIPOINT</option><option>MULTILINESTRING</option><option>MULTIPOLYGON</option><option>GEOMETRYCOLLECTION</option>
+                                                </optgroup>    </select>
+                                        </td>
+                                        <td><input name="length[]" value="255"></td>
+                                        <td><a href="javascript:;" class=" dele-field btn-danger">删除</a> </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input name="tips[]" value="发布时间"></td>
+                                        <td><input name="name[]" value="posttime"></td>
+                                        <td>
+                                            <select class="column_type" name="field_type[]">
+                                                <option selected="selected">INT</option><option>VARCHAR</option><option>TEXT</option><option>DATE</option>
+                                                <optgroup label="NUMERIC"><option>TINYINT</option><option>SMALLINT</option><option>MEDIUMINT</option><option>INT</option><option>BIGINT</option>
+                                                    <option disabled="disabled">-</option><option>DECIMAL</option><option>FLOAT</option><option>DOUBLE</option><option>REAL</option>
+                                                    <option disabled="disabled">-</option><option>BIT</option><option>BOOLEAN</option><option>SERIAL</option></optgroup>
+                                                <optgroup label="DATE and TIME"><option>DATE</option><option>DATETIME</option><option>TIMESTAMP</option><option>TIME</option>
+                                                    <option>YEAR</option></optgroup><optgroup label="STRING"><option>CHAR</option><option>VARCHAR</option>
+                                                <option disabled="disabled">-</option><option>TINYTEXT</option><option>TEXT</option><option>MEDIUMTEXT</option>
+                                                <option>LONGTEXT</option><option disabled="disabled">-</option><option>BINARY</option><option>VARBINARY</option>
+                                                <option disabled="disabled">-</option><option>TINYBLOB</option><option>MEDIUMBLOB</option><option>BLOB</option>
+                                                <option>LONGBLOB</option><option disabled="disabled">-</option><option>ENUM</option><option>SET</option></optgroup>
+                                                <optgroup label="SPATIAL"><option>GEOMETRY</option><option>POINT</option><option>LINESTRING</option><option>POLYGON</option>
+                                                    <option>MULTIPOINT</option><option>MULTILINESTRING</option><option>MULTIPOLYGON</option><option>GEOMETRYCOLLECTION</option>
+                                                </optgroup>    </select>
+                                        </td>
+                                        <td><input name="length[]" value="15"></td>
+                                        <td><a href="javascript:;" class=" dele-field btn-danger">删除</a> </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input name="tips[]" value="主体内容"></td>
+                                        <td><input name="name[]" value="content"></td>
+                                        <td>
+                                            <select class="column_type" name="field_type[]">
+                                                <option>INT</option><option>VARCHAR</option><option selected="selected">TEXT</option><option>DATE</option>
+                                                <optgroup label="NUMERIC"><option>TINYINT</option><option>SMALLINT</option><option>MEDIUMINT</option><option>INT</option><option>BIGINT</option>
+                                                    <option disabled="disabled">-</option><option>DECIMAL</option><option>FLOAT</option><option>DOUBLE</option><option>REAL</option>
+                                                    <option disabled="disabled">-</option><option>BIT</option><option>BOOLEAN</option><option>SERIAL</option></optgroup>
+                                                <optgroup label="DATE and TIME"><option>DATE</option><option>DATETIME</option><option>TIMESTAMP</option><option>TIME</option>
+                                                    <option>YEAR</option></optgroup><optgroup label="STRING"><option>CHAR</option><option>VARCHAR</option>
+                                                <option disabled="disabled">-</option><option>TINYTEXT</option><option>TEXT</option><option>MEDIUMTEXT</option>
+                                                <option>LONGTEXT</option><option disabled="disabled">-</option><option>BINARY</option><option>VARBINARY</option>
+                                                <option disabled="disabled">-</option><option>TINYBLOB</option><option>MEDIUMBLOB</option><option>BLOB</option>
+                                                <option>LONGBLOB</option><option disabled="disabled">-</option><option>ENUM</option><option>SET</option></optgroup>
+                                                <optgroup label="SPATIAL"><option>GEOMETRY</option><option>POINT</option><option>LINESTRING</option><option>POLYGON</option>
+                                                    <option>MULTIPOINT</option><option>MULTILINESTRING</option><option>MULTIPOLYGON</option><option>GEOMETRYCOLLECTION</option>
+                                                </optgroup>    </select>
+                                        </td>
+                                        <td><input name="length[]" value=""></td>
+                                        <td><a href="javascript:;" class=" dele-field btn-danger">删除</a> </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input name="tips[]" value="备注"></td>
+                                        <td><input name="name[]" value="remarks"></td>
+                                        <td>
+                                            <select class="column_type" name="field_type[]">
+                                                <option>INT</option><option selected="selected">VARCHAR</option><option>TEXT</option><option>DATE</option>
+                                                <optgroup label="NUMERIC"><option>TINYINT</option><option>SMALLINT</option><option>MEDIUMINT</option><option>INT</option><option>BIGINT</option>
+                                                    <option disabled="disabled">-</option><option>DECIMAL</option><option>FLOAT</option><option>DOUBLE</option><option>REAL</option>
+                                                    <option disabled="disabled">-</option><option>BIT</option><option>BOOLEAN</option><option>SERIAL</option></optgroup>
+                                                <optgroup label="DATE and TIME"><option>DATE</option><option>DATETIME</option><option>TIMESTAMP</option><option>TIME</option>
+                                                    <option>YEAR</option></optgroup><optgroup label="STRING"><option>CHAR</option><option>VARCHAR</option>
+                                                <option disabled="disabled">-</option><option>TINYTEXT</option><option>TEXT</option><option>MEDIUMTEXT</option>
+                                                <option>LONGTEXT</option><option disabled="disabled">-</option><option>BINARY</option><option>VARBINARY</option>
+                                                <option disabled="disabled">-</option><option>TINYBLOB</option><option>MEDIUMBLOB</option><option>BLOB</option>
+                                                <option>LONGBLOB</option><option disabled="disabled">-</option><option>ENUM</option><option>SET</option></optgroup>
+                                                <optgroup label="SPATIAL"><option>GEOMETRY</option><option>POINT</option><option>LINESTRING</option><option>POLYGON</option>
+                                                    <option>MULTIPOINT</option><option>MULTILINESTRING</option><option>MULTIPOLYGON</option><option>GEOMETRYCOLLECTION</option>
+                                                </optgroup>    </select>
+                                        </td>
+                                        <td><input name="length[]" value="255"></td>
+                                        <td><a href="javascript:;" class=" dele-field btn-danger">删除</a> </td>
+                                    </tr>
+
+                                </table>
+
+                            </div>
+                            <div class="text-center"><a href="javascript:;" class=" add-field btn btn-success">为表2添加新的字段</a></div>
+
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label col-lg-3"></label>
+                        <div class="col-sm-6 addtype">
+                            <input type="submit" class="form-control creat_new btn-success" value="开始生成新的表">
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </form>
+                <h2>二、修改表中某字段的值</h2>
+                <form action="index.php?c=datas&a=chang_field_value" class="change_form" onsubmit="return false">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label col-lg-3">表（需要修改）</label>
+                        <div class="col-sm-6 addtype">
+                            <input name="table" class="form-control changetable" value="file" >
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label col-lg-3">修改条件</label>
+                        <div class="col-sm-6 addtype">
+                            <textarea name="condition1" class="form-control condition"></textarea>
+
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label col-lg-3">修改的内容</label>
+                        <div class="col-sm-6 addtype">
+                            <div class="table-responsive">
+                                <table class="table table-striped change-value-table">
+                                    <tr>
+                                        <th>修改的字段</th>
+                                        <th>新的值</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    <tr>
+                                        <td><input name="name[]" value=""></td>
+                                        <td><input name="value[]" value=""></td>
+                                        <td><a href="javascript:;" class="dete_change_value btn-danger">删除</a> </td>
+                                    </tr>
+
+                                </table>
+
+                            </div>
+                            <div class="text-center"><a href="javascript:;" class="add-change-value btn btn-success">加一列</a></div>
+
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label col-lg-3"></label>
+                        <div class="col-sm-6 addtype">
+                            <input type="submit" class="form-control change_value btn-success" value="开始修改">
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </form>
+                <h2>三、表中某一字段赋予另一表的某字段的值</h2>
+                <form action="index.php?c=datas&a=assign_field_value" class="assign_form" onsubmit="return false">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label col-lg-2">表（需要修改）</label>
+                        <div class="col-sm-8 addtype">
+                            <input name="table" class="form-control changetable" value="article" >
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                   <!-- <div class="form-group">
+                        <label class="col-sm-3 control-label col-lg-3">修改条件（当前表为cur，增加的表为new,new1等）</label>
+                        <div class="col-sm-6 addtype">
+                            <textarea name="condition1" class="form-control condition">
+                                where cur.type=new.id
+                            </textarea>
+
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label col-lg-2">修改的内容</label>
+                        <div class="col-sm-8 addtype">
+                            <div class="table-responsive">
+                                <table class="table table-striped assign-value-table">
+                                    <tr>
+                                        <th>表</th>
+                                        <th>字段（另一）</th>
+                                        <th>当前表字段</th>
+                                        <th>条件</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    <tr>
+                                        <td><input name="tables[]" value="type"></td>
+                                        <td><input name="name[]" value="sign"></td>
+                                        <td><input name="curname[]" value="sign"></td>
+                                        <td><input name="condition1[]" value="where cur.type=new.id"></td>
+                                        <td><a href="javascript:;" class="dete_assign_value btn-danger">删除</a> </td>
+                                    </tr>
+
+                                </table>
+
+                            </div>
+                            <div class="text-center"><a href="javascript:;" class="add-assign-value btn btn-success">加一列</a></div>
+
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label col-lg-3"></label>
+                        <div class="col-sm-6 addtype">
+                            <input type="submit" class="form-control assign_value btn-success" value="开始修改">
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+<div class="bg">
+    <div class="img"></div>
+    <!--<img src="<?=PUBLIC_s?>/common/images/bg2.jpg">-->
+</div>
+
+<script src="<?=Pback?>/js/jquery.min.js"></script>
+
+<script>
+    (function () {
+
+        /*添加新字段*/
+        $('.add-field').click(function () {
+            var tr='<tr>'+
+                '<td><input name="tips[]"></td>'+
+                '<td><input name="name[]"></td>'+
+                '<td> <select class="column_type" name="field_type[]">'+
+                '<option>INT</option><option>VARCHAR</option><option>TEXT</option><option>DATE</option>'+
+                '<optgroup label="NUMERIC"><option>TINYINT</option><option>SMALLINT</option><option>MEDIUMINT</option><option>INT</option><option>BIGINT</option>'+
+                '<option disabled="disabled">-</option><option>DECIMAL</option><option>FLOAT</option><option>DOUBLE</option><option>REAL</option>'+
+                '<option disabled="disabled">-</option><option>BIT</option><option>BOOLEAN</option><option>SERIAL</option></optgroup>'+
+                '<optgroup label="DATE and TIME"><option>DATE</option><option>DATETIME</option><option>TIMESTAMP</option><option>TIME</option>'+
+                '<option>YEAR</option></optgroup><optgroup label="STRING"><option>CHAR</option><option>VARCHAR</option>'+
+                '<option disabled="disabled">-</option><option>TINYTEXT</option><option>TEXT</option><option>MEDIUMTEXT</option>'+
+                '<option>LONGTEXT</option><option disabled="disabled">-</option><option>BINARY</option><option>VARBINARY</option>'+
+                '<option disabled="disabled">-</option><option>TINYBLOB</option><option>MEDIUMBLOB</option><option>BLOB</option>'+
+                '<option>LONGBLOB</option><option disabled="disabled">-</option><option>ENUM</option><option>SET</option></optgroup>'+
+                '<optgroup label="SPATIAL"><option>GEOMETRY</option><option>POINT</option><option>LINESTRING</option><option>POLYGON</option>'+
+                '<option>MULTIPOINT</option><option>MULTILINESTRING</option><option>MULTIPOLYGON</option><option>GEOMETRYCOLLECTION</option>'+
+                '</optgroup>    </select>'+
+                ' <td><input name="length" value="255"></td>'+
+                '<td><a href="javascript:;" class=" dele-field btn-danger">删除</a> </td>'+
+            '</tr>';
+            $(".new-field-table").append(tr);
+            $('.new-field-table tr').find('.dele-field').bind('click',function () {
+                $(this).parent().parent().remove();
+            });
+        });
+        /*删除该字段*/
+        $(".dele-field").click(function () {
+            console.log(this);
+            $(this).parent().parent().remove();
+        });
+        $(".oldtable1").change(function () {
+            if($(this).val()!=''){
+                $.get('index.php?c=datas&a=getFields&table='+$(this).val(),function (rtn) {
+                    if(rtn.status){
+                        $('.oldfield1').val(rtn.fields);
+                    }else {
+                        $('.oldfield1').val('该表不存在');
+                    }
+                },'json');
+            }
+        });
+        $(".creat_new").click(function () {
+            if($(".oldtable1").val()!='' && $("input[name='newtable']").val()!=''){
+                var data=$(".create_form").serialize();
+                $.ajax({
+                    url: "index.php?c=datas&a=one_table_to_two", //请求的url地址
+                    dataType: "json", //返回格式为json
+                    async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+                    data:  data ,//参数值
+                    type: "GET", //请求方式
+                   // processData: true, //对表单data数据是否进行序列化
+                    contentType: false, //dataType设置你收到服务器数据的格式
+                    success: function(rtn) { //ajax进度条
+                       if(rtn.status){
+                           alert(rtn.msg);
+                       }
+                    }
+
+                });
+
+
+            }
+        })
+        /*修改某字段的值 ----再添加一列*/
+        $(".add-change-value").click(function () {
+            var tr='<tr>'+
+                '<td><input name="name[]" ></td>'+
+                '<td><input name="value[]" ></td>'+
+                '<td><a href="javascript:;" class="dete_change_value btn-danger">删除</a> </td>'+
+                '</tr>';
+            $('.change-value-table').append(tr);
+            $('.change-value-table tr').find('.dete_change_value').bind('click',function () {
+                $(this).parent().parent().remove();
+            });
+        })
+        /*修改某字段的值  删除 对应列*/
+        $(".dete_change_value,.dete_assign_value").click(function () {
+            $(this).parent().parent().remove();
+        })
+        $(".add-assign-value").click(function () {
+            var tr='<tr>'+
+                '<td><input name="tables[]" ></td>'+
+                '<td><input name="name[]" ></td>'+
+                '<td><input name="curname[]" ></td>'+
+                '<td><input name="condition1[]" ></td>'+
+                '<td><a href="javascript:;" class="dete_assign_value btn-danger">删除</a> </td>'+
+                '</tr>';
+            $('.assign-value-table').append(tr);
+            $('.assign-value-table tr').find('.dete_assign_value').bind('click',function () {
+                $(this).parent().parent().remove();
+            });
+        })
+        $(".assign_value").click(function () {
+            if($('.assign_form .changetable').val()!=''){
+                var data=$(".assign_form").serialize();
+                $.ajax({
+                    url: "index.php?c=datas&a=assign_field_value", //请求的url地址
+                    dataType: "json", //返回格式为json
+                    async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+                    data:  data ,//参数值
+                    type: "GET", //请求方式
+                    success: function(rtn) { //ajax进度条
+                        if(rtn.status){
+                            alert(rtn.msg);
+                        }
+                    }
+
+                });
+
+            }
+        })
+
+
+
+    })();
+
+</script>
+
+</body>
+</html>

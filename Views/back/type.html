@@ -1,0 +1,413 @@
+<?php include_once Vback."/public/header.html";?>
+<link rel="stylesheet" href="<?=Pback?>/css/bootstrapStyle/tree.css" type="text/css">
+    <section class="wrapper">
+        <div class="table-agile-info">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    分类列表
+                </div>
+                <?php
+
+                    function tree1html($tree,$glue=''){
+                     if(!empty($glue)){$glue="&nbsp;&nbsp;".$glue;}//多维累加
+
+                        foreach($tree as $leaf) {
+                           if(trim($leaf['parentid'])==0){$glue='';}//清空
+                            echo '<option value="'.$leaf['id'].'">'.$glue.$leaf['name'].'</option>';
+                                if(!empty($leaf['children'])){
+                                    if(empty($glue)){$glue='&nbsp;|-';}
+                                    tree1html($leaf['children'],$glue);
+                                }else{
+                                    $glue='';//为了最后清空
+                                }
+                            }
+                    }
+                function getinner($tree,$glue=''){
+                echo ' <tr class="inner">
+                <td colspan="4">
+                    <table class="list">';
+                        tree3html($tree,$glue);
+                        echo '</table>
+                </td>
+            </tr>';
+                }
+                function outer($tree,$glue=''){
+                if($tree['is_open']==='true'){
+                $is_open='已开启';
+                $is_title='点击使其关闭';
+                }else{
+                $is_open='已关闭';
+                $is_title='点击使其开启';
+                }
+                echo ' <tr class="outer">
+                <td>'.$glue.'<span class="switch"></span> <span class="checkbox" data-id="'.$tree['id'].'"></span><span class="ico"></span><span class="name">'.$tree['id'].'</span></td>
+                <td>'.$tree['name'].'</td>
+                <td>'.$tree['sign'].'</td>
+                <td>'.$tree['linkurl'].'</td>
+                <td>'.$tree['keywords'].'</td>
+                <td>'.$tree['description'].'</td>
+                <td>
+                    <a href="javascript:add_chil('.$tree['id'].');"  class="active" ui-toggle-class="">添加子类型</a>
+                    <a onclick="edit('.$tree['id'].','.$tree['parentid'].',this)" href="javascript:;" class="active" ui-toggle-class=""><i class="fa fa-edit text-success text-active"></i></a>
+                    <a href="javascript:dele_sing('.$tree['id'].');" class="active" ui-toggle-class=""></i><i class="fa fa-times text-danger text"></i></a>
+                    <a  class="is_open" href="javascript:is_open('.$tree['id'].','.$tree['is_open'].')" title="'.$is_title.'">'.$is_open.'</a>
+                </td>
+            </tr>';
+
+
+                }
+                function leaf($tree,$glue=''){
+                if($tree['is_open']==='true'){
+                    $is_open='已开启';
+                    $is_title='点击使其关闭';
+                }else{
+                    $is_open='已关闭';
+                    $is_title='点击使其开启';
+                }
+                echo '<tr class="leaf">
+                <td>'.$glue.'<span class="switch"></span> <span class="checkbox" data-id="'.$tree['id'].'"></span><span class="ico"></span><span class="name">'.$tree['id'].'</span></td>
+                <td>'.$tree['name'].'</td>
+                <td>'.$tree['sign'].'</td>
+                <td>'.$tree['linkurl'].'</td>
+                <td>'.$tree['keywords'].'</td>
+                <td>'.$tree['description'].'</td>
+                <td>
+                    <a href="javascript:add_chil('.$tree['id'].');"  class="active" ui-toggle-class="">添加子类型</a>
+                    <a onclick="edit('.$tree['id'].','.$tree['parentid'].',this)" href="javascript:;"  class="active" ui-toggle-class=""><i class="fa fa-edit text-success text-active"></i></a>
+                    <a href="javascript:dele_sing('.$tree['id'].');" class="active" ui-toggle-class=""></i><i class="fa fa-times text-danger text"></i></a>
+                    <a class="is_open" href="javascript:is_open('.$tree['id'].','.$tree['is_open'].')" title="'.$is_title.'">'.$is_open.'</a>
+                </td>
+            </tr>';
+                }
+
+                function tree3html($tree,$glue=''){
+                    if(is_array($tree[0])){
+                        foreach ($tree as $leaf){
+                        if($leaf['parentid']==0) $glue='';//在初始时无法真正清空$glue
+                        if(!empty($leaf['children'])){
+                        outer($leaf,$glue);
+                        $glue.='<span class="text-indent"></span>';
+                        getinner($leaf['children'],$glue);
+                        }else{
+                        leaf($leaf,$glue);
+                        $glue='';//最后清空
+                        }
+
+                        }
+
+                    }
+                }
+                ?>
+                <!--添加表单-->
+                <div class="row w3-res-tb add-detail">
+                    <form onsubmit="return false" id="addform">
+                        <div class="col-sm-6 col-xs-12">
+                            <div class="form-group ">
+                                <label for="cname" class="control-label col-lg-2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">名称（必填）</font></font></label>
+                                <div class="col-lg-10">
+                                    <input class="" id="cname" name="name" minlength="2" type="text" required="">
+                                    <select id="typename">
+                                        <?php
+                                        foreach($arr_oth['types'] as $val){
+                                        ?>
+                                        <option><?=$val['name'];?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5 col-xs-12">
+                           <div class="form-group">
+                               <label for="cname" class="control-label col-lg-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">所属父级类型</font></font></label>
+                               <div class="col-lg-6">
+                                   <select class="form-control m-bot15" name="parentid">
+                                       <option value="0"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">一级</font></font></option>
+                                       <?=tree1html($arr);?>
+                                   </select>
+                               </div>
+
+                           </div>
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                <label for="cname" class="control-label col-lg-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">关键字</font></font></label>
+                                <div class="col-lg-6">
+                                    <input name="keywords" class="form-control">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                <label for="cname" class="control-label col-lg-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">描述</font></font></label>
+                                <div class="col-lg-6">
+                                    <textarea name="description" class="form-control" cols="40" rows="4"></textarea>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                           <div class="col-xs-9">
+                               <label for="cname" class="control-label col-lg-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">地址</font></font></label>
+                               <div class="col-lg-6">
+                                  <input name="linkurl" class="form-control">
+                               </div>
+
+                           </div>
+                            <div class="col-xs-3">
+                                <div class="form-group ">
+                                    <button class="btn btn-success add-submit">提交</button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <input type="hidden" class="actions" name="action" value="add">
+
+                    </form>
+
+                </div>
+                <div class="row w3-res-tb">
+                    <div class="col-sm-5 m-b-xs">
+                        <select class="form-control w-sm inline v-middle" name="check" id="handles">
+                            <option value="dele">删除</option>
+                            <option value="1">Delete selected</option>
+                            <option value="2">Bulk edit</option>
+                            <option value="3">Export</option>
+                        </select>
+                        <button class="btn btn-sm btn-default sure-btn">确认</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <a href="javascript:;" class="btn btn-success add" id="addtype">添加</a>
+                            <a href="index.php?c=back&a=types" class="btn btn-success add">总分类</a>
+                        </div>
+
+
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <input type="text" class="input-sm form-control keyword" name="keyword" placeholder="请输入类型名称">
+                            <span class="input-group-btn">
+                            <button class="btn btn-sm btn-default" id="key-btn" type="button">搜索</button>
+          </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive" style="padding-left: 10px;">
+                    <table id="listTable" class="list table">
+                        <thead>
+                        <tr>
+                            <th><span class="checkbox" id="check_all" data-ch="0"></span>id</th>
+                            <th>名称</th>
+                            <th>标记</th>
+                            <th>地址</th>
+                            <th>关键词</th>
+                            <th>描述</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <?=tree3html($arr);?>
+                        </tbody>
+                    </table>
+
+                </div>
+                <footer class="panel-footer">
+                    <div class="row">
+
+                        <div class="col-sm-5 text-center">
+                            <small class="text-muted inline m-t-sm m-b-sm">共 <?=$arr_oth['num'];?> 条记录</small>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </section>
+<?php include_once Vback."/public/footer.html";?>
+<script>
+    /*添加表单显示*/
+    $("#addtype").click(function () {
+        if( $('.add-detail').data('edit')) {
+            edit('','','');
+            return ;
+        }else if($('.add-detail').data('add_chil')){
+            $("select[name='parentid']").val('');
+            $('.add-detail').data("add_chil",0);
+            $("#addtype").text("添加");
+            $(".add-detail").hide();
+            return ;
+        }
+
+        $(".add-detail").slideToggle();
+    });
+    /*添加类型*/
+    $(".add-submit").click(function () {
+        if($("#cname").val()!=''){
+            $data=$("#addform").serialize();
+            $.get("index.php?c=back&a=addtype",$data,function (rtn) {
+                //var res=$.parseJSON(rtn);
+                console.log(rtn);
+               if(rtn.status){
+                   $("#cname").val(' ');
+                   $(".add-detail").slideToggle();
+                   alert(rtn.msg);
+                   location.href="index.php?c=back&a=type";
+               }else{
+                   alert(rtn.msg);
+               }
+            },'json');
+        }
+    });
+    /*列表的处理*/
+    $(".tree_btns").click(function () {
+       if($(this).hasClass("roots_open")){
+           $(this).removeClass("roots_open").addClass("roots_close");
+           $(this).next().next().next().slideToggle();
+       }else{
+           $(this).removeClass("roots_close").addClass("roots_open");
+           $(this).next().next().next().slideToggle();
+       }
+    });
+    /*搜索*/
+    $("#key-btn").click(function () {
+        if($(".keyword").val()!=''){
+            location.href="index.php?c=back&a=type&keyword="+$(".keyword").val();
+        }
+    })
+    //回车触发搜索
+    $(".keyword").keyup(function(event){
+        if(event.keyCode ==13){
+            $("#key-btn").trigger("click");
+        }
+    });
+    /*删除   单个*/
+    function dele_sing(id) {
+        var sure=window.confirm("确认删除吗？");
+        if(sure){
+            $.get("index.php?c=back&a=deletype",{id:id},function (rtn) {
+                // var res=$.parseJSON(rtn);
+                if(rtn.status){
+                    alert("删除成功");
+                    location.href="index.php?c=back&a=type";
+                }else {
+                    alert("删除失败");
+                }
+            },'json');
+        }
+    }
+
+    /*多选 确认*/
+    $(".sure-btn").click(function () {
+        var handles=$("#handles").val();
+        switch (handles){
+            case "dele":
+                var id="(",glue='';
+                $(".list .checkbox.checked").each(function (i,ele) {
+                    id+=glue+$(this).data("id");
+                    glue=",";
+                });
+                id+=")";
+            console.log($(".list .checkbox.checked"));
+            console.log(id);
+                dele_sing(id);
+                break;
+            default:
+                break;
+        }
+    });
+
+
+    /*实现折叠*/
+    $(".switch").click(function(){
+        if($(this).parents(".outer").is(".open")){
+            $(this).parents(".outer").removeClass("open").next(".inner").removeClass("open");
+        }else{
+            $(this).parents(".outer").addClass("open").next(".inner").addClass("open");
+        }
+    });
+
+    $("tr.outer, tr.leaf").click(function(){
+        $("tr.focus").removeClass("focus");
+        $(this).addClass("focus");
+    });
+    /*多选选中*/
+    $(".list .checkbox").click(function () {
+        if($(this).is(".checked")){
+            $(this).removeClass("checked").parents(".outer").next(".inner").find(".checkbox").removeClass("checked");
+        }else {
+            $(this).addClass("checked").parents(".outer").next(".inner").find(".checkbox").addClass("checked");
+        }
+    });
+    //全选   多选按钮在js获取时多了checked类，但页面上显示并没有
+    $('#check_all').click(function () {
+        if($(this).data("ch")){
+            $(this).removeClass("checked");
+            $(".checkbox").removeClass("checked");
+            $(this).data('ch',0);
+        }else{
+            $(this).addClass("checked");
+            $(".checkbox").addClass("checked");
+            $(this).data('ch',1);
+        }
+
+    })
+
+    //编辑
+    function edit(id,parent,obj) {
+        $("#addform input[name='id']").remove();
+        if($(obj).data("edit")||obj==''){
+            //值清空  改为添加
+            $("#cname").val('');
+            $("input[name='linkurl']").val();
+            $("input[name='keywords']").val();
+            $("textarea[name='description']").val();
+            $("select[name='parentid']").val('');
+            $(obj).data("edit",0);
+            $('.add-detail').data("edit",0);
+            /*去掉额外添加的值*/
+            $(".actions").val("add");
+            $("#addtype").text("添加");
+            $(".add-detail").hide();
+        }else{
+            $("#cname").val($(obj).parent().prev().prev().prev().prev().prev().text());//name通过PHP获取，转码为unicode，报错
+            $("select[name='parentid']").val(parent);
+            $("input[name='linkurl']").val($(obj).parent().prev().prev().prev().text());
+            $("input[name='keywords']").val($(obj).parent().prev().prev().text());
+            $("textarea[name='description']").val($(obj).parent().prev().text());
+            var input="<input value='"+id+"' type='hidden' name='id'>";
+            $("#addform").append(input);
+            $(".actions").val("edit");
+            $(obj).data("edit",1);
+            $('.add-detail').data("edit",1);
+            $("#addtype").text("关闭");
+            $(".add-detail").show();
+        }
+    }
+    function add_chil(parent) {
+            $("select[name='parentid']").val(parent);
+            $('.add-detail').data("add_chil",1);
+            $("#addtype").text("关闭");
+            $(".add-detail").show();
+
+    }
+    function is_open(id,is_open) {
+        var is= is_open==='true' ? 'false':'true';
+        $.get("index.php?c=back&a=edittype",{id:id,is_open:is},function (rtn) {
+            // var res=$.parseJSON(rtn);
+            if(rtn.status!==2){
+                var open= is==='true' ? '已开启':'已关闭';
+                var title= is==='true' ? '点击使其关闭':'点击使其开启';
+                var href=':javascript:is_open('+id+','+is+')';
+                $('.is_open').text(open).attr('title',title).attr('href',href);
+            }
+            alert(rtn.msg);
+        },'json');
+    }
+
+    /*添加分类赋值*/
+    $("#typename").change(function () {
+        $("#cname").val($(this).val());
+    });
+
+</script>

@@ -1,0 +1,96 @@
+<aside>
+    <div class="userinfo">
+        <p class="btns">
+            <a href="/main/article" target="_blank" title="<?=$this->article_num?>篇文章" ><span class="iconfont icon-wenzhang2"></span><?=$this->article_num?></a>
+            <a href="/" target="_blank" title="<?=$this->picture_num?>种类型图片"><span class="iconfont icon-tupian"></span><?=$this->picture_num?></a>
+            <a href="/main/templates" target="_blank" title="<?=$this->bookmarking_num?>个模板"> <span class="iconfont icon-xiazai"></span><?=$this->bookmarking_num?></a>
+            <a href="/main/website" target="_blank" title="<?=$this->templates_num?>个收藏"><span class="iconfont icon-ziyuan-copy"></span><?=$this->templates_num?></a>
+        </p>
+    </div>
+    <section class="search-box aside-list">
+        <h3 class="aside-title">关键字搜索</h3>
+        <div class="aside-cont">
+            <form action="/main/search">
+                <div class="form-group">
+                    <input class="input_control keyword" name="keyword" placeholder="请输入关键字">
+                    <input type="submit" value="搜索" class="search-btn">
+                </div>
+            </form>
+        </div>
+    </section>
+    <section class="hot aside-list">
+        <h3 class="aside-title">推荐文章</h3>
+        <div class="aside-cont">
+            <ul class="count_ul">
+                <?php
+              foreach($hotarticle as $val){
+            ?>
+                <li><a href="/main/articleshow?id-<?=$val['id'];?>" title="<?=$val['title']?>"><?=cut_len($val['title'],14)?>（<?=($val['hits'])?>）</a></li>
+                <?php } ?>
+            </ul>
+        </div>
+    </section>
+    <section class="comment aside-list">
+        <h3 class="aside-title">最新评论</h3>
+        <div class="aside-cont">
+            <?php
+              if(empty($this->recent_comment)&&empty($this->recent_comment[0])) echo "暂无评论！";
+            foreach($this->recent_comment as $val){
+            ?>
+            <div class="comment_one">
+                <div class="img"><img src="<?=$val['headimg'];?>" title="<?=$val['nickname'];?>"></div>
+                <div class="comment_text">
+                    <div class="main">
+                        <div><?=$val['content'];?></div>
+                        <!--<div class="origin">评自：<a href="/main/articleshow?id-<?=$val['tid'];?>"><?=$val['article_title']?></a> </div>-->
+                    </div>
+
+                </div>
+                <div class="clear"></div>
+                <div class="origin">评自：<a href="/main/articleshow?id-<?=$val['tid'];?>"><?=$val['article_title']?></a> </div>
+
+            </div>
+            <?php } ?>
+
+        </div>
+    </section>
+    <section class="classify aside-list">
+        <h3 class="aside-title">分类</h3>
+        <div class="aside-cont">
+            <?php
+          foreach($this->category as $row){
+            echo '<a href="'.$row['linkurl'].'" title="'.$row['name'].'">'.$row['name'].'</a>';
+            }
+            ?>
+            <div class="clear"></div>
+        </div>
+    </section>
+    <section class="statistics aside-list">
+        <h3 class="aside-title">网站统计</h3>
+        <div class="aside-cont">
+            <ul class="count_ul">
+               <!-- <li class="col-51"> 本站管理： xx位</li>
+                <li class="col-51">  用户总数：xx位</li> -->
+                <li class="col-51">  置顶文章：0篇</li>
+                <li class="col-51">  文章总数：<?=$this->article_num?>篇</li>
+                <li class="col-51">评论总数：<?=$this->comment_nums?>条</li>
+                <li class="col-51">分类总数：<?=$this->category_num?>个</li>
+                <div>  最近更新：
+                    <?php
+
+                   switch( $this->last_news['tableid']){
+                    case 1: $gourl2='/main/articleshow?id-'.$this->last_news['id'];$typename='文章'; break;
+                    case 2: $gourl2='/main/website';$typename='网址收藏'; break;
+                    case 3: $gourl2=empty($this->last_news['belong']) ? '/main/templates'.$this->last_news['id']:$GLOBALS['cfg_weburl'].'/'.$this->last_news['belong'];$typename='模板'; break;
+                    case 4: $gourl2='/main/manual/?belong='. $this->last_news['belong'].'&mid='.$this->last_news['id'];$typename='手册'; break;
+                    case 7: $gourl2='/main/news?ct='. $this->last_news['belong'];$typename='热门资讯'; break;
+                    default:  $gourl2='/main/articleshow?id-'.$this->last_news['id'];$typename='文章'; break;
+                    }
+                    echo "<a class='red' href='".$gourl2."' target='_blank'>".cut_len($this->last_news['title'],15)."&nbsp;&nbsp;<span class='iconfont icon-zlicondate01 timespan'> ".date('Y-m-d',$this->last_news['posttime'])."</span></a>";
+                    ?></div>
+                <div class="clear"></div>
+            </ul>
+        </div>
+    </section>
+
+</aside>

@@ -1,0 +1,101 @@
+<?php  include_once Vmain."/header.html";?>
+ <div class="mainContent">
+    <div class="container">
+            <div class="blogitem">
+              <article>
+                <h1 class="title"><?=$arr['title']?></h1>
+                <div class="text">
+                  <div class="info">
+                    <span class="mu-ml"><i class="iconfont icon-zuozhe"></i><?=$arr['author']?></span>
+                    <span class="mu-ml-clock"><i class="iconfont icon-zlicondate01"></i><?=date('Y-m-d H:i:s',$arr['posttime']);?></span>
+                    <span class="mu-ml-eye"><i class="iconfont icon-liulan"></i><?=$arr['hits']?>次</span>
+                    <span class="mu-ml-comment"><i class="iconfont icon-zuixindongtai"></i><a href=""><?=$arr['commentnum'];?></a></span>
+                    <span class="mu-ml-comment"><i class="iconfont icon-zan-empay"></i><?=$arr['thumbs_up'];?></span>
+
+                  </div>
+                  <?=stripslashes($arr['content'])?>
+                </div>
+
+                  <div class="thumbs-up">
+                      <div class="spot zan" data-id="<?=$arr['id']?>"><i class="iconfont icon-zan-empay" title="点赞" ></i><span><?=$arr['thumbs_up']?></span> </div>
+                      <div class="spot cai"><i class="iconfont icon-cai" title="踩" ></i><span><?=$arr['step']?></span> </div>
+                      <div class="clear"></div>
+                  </div>
+
+
+                  <div class="comment_wrap">
+                      <form onsubmit="return false;" class="comment-form">
+                          <h3>发表评论</h3>
+                          <p class="remark">注：<span class="red">*</span>为必填</p>
+                          <div class="form-group replayid">
+                                  回复 <span class="nickname_p"></span> 的评论
+                                  <input type="hidden" name="replayid" class="form-control" value="0">
+
+                              <div class="clear"></div>
+
+                          </div>
+                          <div class="form-group ">
+                              <textarea placeholder="留下您的足迹" name="content" class="content form-control form-textarea"></textarea>
+                              <span class="red">*</span>
+                          </div>
+                          <div class="form-group col-51">
+                              <div class="head_img_list">
+                              </div>
+                              <input name="headimg" style="width: 65%" class="headimg_input form-control" type="hidden"  placeholder="选择头像">
+                             <div class="headimg_img" style=" width: 65%;float: left;"></div>
+                              <span class="choice_img">选择</span>
+
+                          </div>
+                          <div class="form-group col-51">
+                              <input name="nickname" class="form-control nickname" placeholder="请输入您的昵称">   <span class="red">*</span>
+                          </div>
+                          <div class="form-group col-51">
+                              <input name="weburl" class="form-control weburl" placeholder="请输入您的网址">
+                          </div>
+                          <div class="form-group col-51">
+                              <input name="email" class="form-control email" placeholder="请输入您的邮箱">   <span class="red">*</span>
+                          </div>
+                        <div class="clear"></div>
+                          <div class="form-group ">
+                              <input type="submit" class="form-submit form-control" value="提交">
+                              <input type="hidden" name="userid" class="userid" value="0">
+                          </div>
+
+                      </form>
+
+
+                      <div class="comment-list">
+                          <ul>
+
+                          </ul>
+                      </div>
+
+                  </div>
+                  <div class="textfoot">
+                      <h3 class="title_r"><i class="iconfont icon-tubiao302"></i> 类似文章</h3>
+                      <div class="cont_r">
+                          <ul>
+                              <?php
+
+                            if(!empty($arr_oth['recommentarticle'][0]['id'])){
+                                foreach($arr_oth['recommentarticle'] as $value){
+                                    echo "<li><a href='".$GLOBALS["cfg_weburl"]."/main/articleshow?id-".$value["id"]." '>".$value['title']."</a> </li>";
+                                    }
+                              }
+
+                              ?>
+
+                          </ul>
+
+                      </div>
+
+
+                  </div>
+              </article>
+               </div>
+            <?php include_once Vmain."/detailLeft.html";?>
+    </div>
+ </div>
+<?php include_once Vmain."/footer.html";?>
+
+<script src="<?=Pmain?>/js/articleshow.min.js"></script>

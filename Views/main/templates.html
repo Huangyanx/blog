@@ -1,0 +1,47 @@
+<?php include_once Vmain."/header.html";?>
+ <div class="mainContent">
+    <div class="container">
+
+          <div class="blogitem">
+                <article>
+                  <div class='index-list'>
+                    <h1 class="lists-title">
+                      <a href="/article" ><span class="iconfont icon-xiazai"></span>模板</a>
+                    </h1>
+                    <div class="lists index-file">
+                      <?php
+                        foreach($file as $val){
+                        $img=empty($val['upimg']) ? Pcommon.'/images/nopicture.png':"/".$val['upimg'];
+                      ?>
+                      <div class="list-one col-31">
+                        <a href="/<?=$val['url']?>" target="_blank" rel="nofollow">
+                          <div class="img">
+                            <img src="<?=$img;?>">
+                            <div class="file_text"><?=$val['title']?></div>
+                          </div>
+                        </a>
+                      </div>
+                      <?php }?>
+                      <div class="clear"></div>
+                    </div>
+
+                  </div>
+                </article>
+                <div class="pages">
+                  <a href="<?=$arr_oth['pagelist']['first_page']?>"><<</a>
+                  <a href="<?=$arr_oth['pagelist']['p_pre']?>"><</a>
+                  <?php
+                                          foreach($arr_oth['pagelist']['p_list'] as $val){
+                                              echo "<a href='".$arr_oth['pagelist']['url']."page-".$val."'>".$val."</a>";
+                  }
+                  ?>
+                  <a href="<?=$arr_oth['pagelist']['p_next']?>"> > </a>
+                  <a href="<?=$arr_oth['pagelist']['last_page']?>"> >> </a>
+
+                </div>
+          </div>
+        <?php include_once Vmain."/left.html";?>
+
+    </div>
+ </div>
+<?php include_once Vmain."/footer.html";?>

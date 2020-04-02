@@ -1,0 +1,353 @@
+<?php include_once Vback."/public/header.html";?>
+<link rel="stylesheet" href="<?=Pback?>/js/tree/bootstrapStyle.css" type="text/css">
+<script type="text/javascript" src="<?=Pback?>/js/tree/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="<?=Pback?>/js/tree/jquery.ztree.excheck.js"></script>
+<script type="text/javascript" src="<?=Pback?>/js/tree/jquery.ztree.exedit.js"></script>
+<script type="text/javascript" src="/Views/kindeditor-4.1.7/kindeditor-min.js"></script>
+<script type="text/javascript" src="/Views/kindeditor-4.1.7/lang/zh_CN.js"></script>
+<SCRIPT type="text/javascript">
+    <!--
+    var arr=JSON.parse('<?php echo json_encode($arr)?>');
+    var zNodes=[];
+       var len=arr.length;
+       for(var i=0;i<len;i++){
+          var obj={'id':arr[i]['id'],'pId':arr[i]['parentid'],'name':arr[i]['name']};
+           zNodes.push(obj);
+       }
+
+
+    //console.log(arr);
+    var setting = {
+        view: {
+            addHoverDom: addHoverDom,
+            removeHoverDom: removeHoverDom,
+            selectedMulti: false
+        },
+        check: {
+            enable: true
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        edit: {
+            enable: true
+        }
+    };
+
+    /*var zNodes =[
+        {id:6, pId:0, name:"其他扩展功能 演示", open:false},
+        {id:601, pId:6, name:"隐藏普通节点"},
+        {id:602, pId:6, name:"配合 checkbox 的隐藏"},
+        {id:603, pId:6, name:"配合 radio 的隐藏"}
+    ];*/
+
+    $(document).ready(function(){
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    });
+
+    var newCount = 1;
+    function addHoverDom(treeId, treeNode) {
+        var sObj = $("#" + treeNode.tId + "_span");
+        if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+        var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+            + "' title='add node' onfocus='this.blur();'></span>";
+        sObj.after(addStr);
+        var btn = $("#addBtn_"+treeNode.tId);
+        if (btn) btn.bind("click", function(){
+            var parent_id=$(this).parent().parent('li').data('id')+500;
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+            zTree.addNodes(treeNode, {id:(parent_id + newCount), pId:treeNode.id, name:"new node" + (newCount++)});
+            return false;
+        });
+    };
+    function removeHoverDom(treeId, treeNode) {
+        $("#addBtn_"+treeNode.tId).unbind().remove();
+    };
+    //-->
+</SCRIPT>
+    <section class="wrapper">
+        <div class="table-agile-info">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    手册
+                </div>
+                <div class="row w3-res-tb">
+                    <div class="col-sm-5 m-b-xs">
+                        <select class="input-sm form-control w-sm inline v-middle" id="serach-select">
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <a href="/index.php?c=back&a=addfile" class="btn btn-success add">添加</a>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <input type="text" class="input-sm form-control" placeholder="Search">
+                            <span class="input-group-btn">
+                    <button class="btn btn-sm btn-default" type="button">搜索</button>
+          </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-wrap">
+                    <div class="manual-left">
+                        <div class="manual-bar">
+                            <div class="fa fa-bars"></div>
+                        </div>
+                        <h2 class="text-center" data-belong="<?=$_GET['belong'];?>"><span title="添加" class="addmanual"></span><?=$_GET['belong'];?></h2>
+                        <ul id="treeDemo" class="ztree"></ul>
+                    </div>
+                    <div class="manual-content">
+                        <h1></h1>
+                        <div class="show-cont">
+                            <div class="operation">
+                                <i class="fa  fa-pencil-square-o edit-show" title="编写"></i>
+                            </div>
+                            <div class="remark-show"></div>
+                            <div class="content">
+                            </div>
+                        </div>
+                        <div class="edit-cont">
+                            <div class="operation">
+                                <i class="fa  fa-eye view-show" title="查看"></i>
+                                <i class="fa  fa-save save-edit" title="保存"></i>
+
+                            </div>
+                            <div class="content">
+                                    <textarea type="text" class="form-control input-lg kindeditor" name="content" id="content" placeholder=""></textarea>
+                                    <script>
+                                        var editor;
+                                        KindEditor.ready(function(K) {
+                                            editor = K.create('#content', {
+                                                allowFileManager : true,
+                                                width:'800px',
+                                                height:'280px',
+                                                extraFileUploadParams : {
+                                                    sessionid :  ''
+                                                }
+                                            });
+                                        });
+                                    </script>
+                            </div>
+                            <div class="form-group">
+                                <label>备注</label>
+                                <textarea class="form-control manual-remark" name="remark"></textarea>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+                <footer class="panel-footer">
+                    <div class="row">
+
+                        <div class="col-sm-5 text-center">
+                            <a class="btn btn-success save " href="javascript:;">保存</a>
+                            <a class="btn btn-danger delete" href="javascript:;">删除</a>
+                        </div>
+                        <div class="col-sm-7 text-right text-center-xs">
+                            <ul class="pagination pagination-sm m-t-none m-b-none">
+                            </ul>
+                            <a class="btn btn-success manual-cont-save " href="javascript:;">保存</a>
+
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </section>
+<?php include_once Vback."/public/footer.html";?>
+
+<script>
+    /*添加一级菜单*/
+    /*获取不了树形对象
+    * 不能进行直接添加操作，只能重新加载
+    * */
+    var belong=$("h2").data('belong');
+    var last_id='';
+    var non_submit=true;
+    $(".addmanual").click(function () {
+        var newn = {id: '', pId: '', name: "新的一级菜单"}
+        zNodes.push(newn);
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    });
+        /*进行引入相关内容*/
+        /*解决js生成的HTML无法获取DOM和添加事件*/
+        $("#treeDemo").on('click', 'li>a', function () {
+            var id = $(this).parent().data('id');
+            /*获取 name*/
+            var name=$(this).find(".node_name").text();
+            $('h1').text(name);
+            //console.log(id);
+            if (hiden_div_if_no_value('.show-cont .content')||$(".save-edit").data('id')!=id) {
+                getcont(id,name);
+            }
+
+        });
+        /*预览、编辑页面显示隐藏*/
+        $(".edit-show").click(function () {
+            $(".edit-cont").show();
+            $(".show-cont").hide();
+        });
+        $(".view-show").click(function () {
+            $(".show-cont").show();
+            $(".edit-cont").hide();
+        });
+        $('.manual-cont-save').click(function () {
+            $(".save-edit").trigger("click");
+        });
+        /*保存编辑后的内容*/
+        $(".save-edit").click(function () {
+            if(non_submit){
+                non_submit=false;
+                var content = editor.html();
+                var id=$(this).data('id');
+                var name=$("h1").text();
+                var remark=$(".manual-remark").val();
+                var action=$(this).data('action');
+                $.post("index.php?c=manual&a=saveManual", {action:action,content: content,id:id,name:name,remarks:remark}, function (rtn) {
+                    non_submit=true;
+                    var res = JSON.parse(rtn);
+                    if (res.status) {
+                        alert("保存成功！");
+                        //预览区内容对应改变
+                        $(".manual-content .show-cont .content").html(content);
+                        $(".manual-content .show-cont .remark-show").html('备注：'+remark);
+                        /*保存按钮的action值变为修改*/
+                        $(".save-edit").data('action', 'edit');
+                    }
+                });
+            }
+
+        });
+
+    //为空返回true
+    function hiden_div_if_no_value(id_inner){
+        var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+        var isFF = userAgent.indexOf("Firefox") > -1; //判断是否Firefox浏览器
+        var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1 && !isOpera; //判断是否IE浏览器
+            //限制内层的空文本显示
+        if($(id_inner)!=null){
+            var contend =$(id_inner).html();
+            if((contend==null || contend.length == 0)&& isIE){ //针对ie
+                return true;
+            }
+            else if(contend.trim()=="" && isFF){ //火狐要加trim
+                return true;
+            }
+
+        }
+    }
+    //进入该页面，显示第一条信息
+    getcont(2);
+    function getcont(id,name) {
+        $.post("index.php?c=manual&a=show", {id: id}, function (rtn) {
+            var res = JSON.parse(rtn);
+            if (res.status) {
+                if(!res.data){//编辑
+                   var content='';
+                   var remark='';
+                   var action='add';
+                }else{
+                  name=res.data.name;
+                    var content=res.data.content;
+                    var remark=res.data.remarks;
+                    var action='edit';
+                }
+                //$(".manual-content h1").html(name);
+                $(".manual-content .show-cont .remark-show").text('备注：'+remark);
+                $(".manual-content .show-cont .content").html(content);
+                $("#content").html(content);
+                $(".manual-remark").text(remark);
+                $(".save-edit").data('id', id);
+                $(".save-edit").data('action', action);
+                editor.html(content);
+
+            }
+        });
+    }
+
+    /*多选选中 插件 的选中 为有一个子类选中，则父类视为选中，不利于对具体的内容操作
+    * 进行添加子类、保存父类或者子类（这个功能无法做到）
+    * */
+    /*保存 添加的分类*/
+    $(".save").click(function () {
+        /*获取选中的id*/
+        if(non_submit) {
+            non_submit = false;
+            var valss=getChecked();
+            var names = valss[0],
+            parentids = valss[1],
+            ids = valss[2];
+            if (names.length > 0) {
+                console.log(names, parentids, ids);
+                $.get("index.php?c=manual&a=addManual", {
+                    names: names,
+                    parentids: parentids,
+                    ids: ids,
+                    belong: belong
+                }, function (rtn) {
+                    non_submit=true;
+                    var res = JSON.parse(rtn);
+                    console.log(res);
+                    if (res.status == 1) {
+                        alert('添加成功！');
+                        /*添加分类成功后，添加的数据的id是不知道的，需要刷新或者重新获取到数据传过来*/
+                        location.href = "index.php?c=manual&a=index&belong=" + belong;
+                    } else if (res.status == 2) {
+                        alert('修改成功！');
+                    }
+                });
+            }
+        }
+    });
+    //删除
+    $('.delete').click(function () {
+        if(confirm('确定删除吗？')){
+            var valss=getChecked();
+            var ids = valss[2];
+            if (ids.length > 0) {
+                $.ajax({
+                    url:'index.php?c=manual&a=deleteManual',
+                    type:'post',
+                    data:{ids:ids,belong: belong},
+                    success:function (rtn) {
+                        non_submit=true;
+                        var res = JSON.parse(rtn);
+                        console.log(res);
+                        if (res.status ==='ok') {
+                            alert('删除成功！');
+                            location.href = "index.php?c=manual&a=index&belong=" + belong;
+                        } else  {
+                            alert(res.msg);
+                        }
+                    },
+                    error:function (e) {
+                        alert('出错啦')
+                    }
+                });
+            }
+
+        }
+
+
+    });
+    function getChecked() {
+        var names = [];
+        parentids = [];
+        ids = [];
+        $('.chk.checkbox_true_full').each(function (i, ele) {
+            names[i] = $(ele).next().children(".node_name").text() || '';
+            parentids[i] = $(ele).parent().parent().parent().data('id') || 0;
+            ids[i] = $(ele).parent().data('id');
+        });
+        return [names,parentids,ids] ;
+    }
+
+
+
+</script>

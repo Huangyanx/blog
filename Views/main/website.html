@@ -1,0 +1,76 @@
+<?php
+include_once Vmain."/header.html";?>
+<link href="<?=Pmain?>/css/website.css" rel="stylesheet">
+ <div class="mainContent">
+     <div class="container">
+         <aside id="website_lefter">
+             <section class="search-box aside-list">
+                 <h3 class="aside-title">关键字搜索</h3>
+                 <div class="aside-cont">
+                     <form action="/main/website">
+                         <div class="form-group">
+                             <input class="input_control keyword" name="keyword" placeholder="请输入关键字">
+                             <input type="submit" value="搜索" class="search-btn">
+                         </div>
+                     </form>
+                 </div>
+                 <div class="aside-title"><a href="/main/website" class="search-btn">查看所有收藏网址</a></div>
+             </section>
+
+             <section class="hot aside-list">
+                 <!--<h3 class="aside-title">热门文章</h3>-->
+                 <div class="aside-cont">
+                     <ul class="count_ul" id="website_left">
+                         <?php
+                  foreach($type as $val){
+                   $idname="website_block".$val['id'];
+                ?>
+                         <li><a href="#<?=$idname?>" title="<?=$val['name']?>"><?=cut_len($val['name'],15)?></a></li>
+                         <?php } ?>
+                     </ul>
+                 </div>
+             </section>
+
+         </aside>
+         <div class="blogitem">
+           <h1>收藏的网址</h1>
+           <?php
+              $type_len=count($type);
+              for($i=0;$i<$type_len;$i++){
+                $idname="website_block".$type[$i]['id'];
+                ?>
+           <article>
+             <div class='index-list'>
+               <h2 class="lists-title">
+                 <a id="<?=$idname?>" href="javascript:;" ><?=$type[$i]['name']?></a>
+               </h2>
+               <div class="lists">
+                 <?php
+                 foreach($website_all[$i] as $val){
+                 $remarks_we=empty($val['remarks'])? '暂无关于该站的描述':$val['remarks'];
+                ?>
+                 <div class="list-one">
+                   <a href="<?=$val['url']?>" target="_blank" rel="nofollow">
+                     <div class="extra-wrap">
+                       <h3><span><?=$val['title']?></span></h3>
+                       <p><?=$remarks_we?></p>
+                     </div>
+                   </a>
+
+                 </div>
+                 <?php }?>
+                 <div class="clear"></div>
+               </div>
+             </div>
+           </article>
+           <?php } ?>
+           <?php
+
+    ?>
+
+         </div>
+     </div>
+
+ </div>
+<?php include_once Vmain."/footer.html";?>
+<script src="<?=Pmain?>/js/website.js"></script>

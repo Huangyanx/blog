@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><?=$arr['title']?></title>
+    <link rel="stylesheet" href="<?=PUBLIC_s?>/common/css/preview.css">
+</head>
+<body>
+<?php include_once "header.html"; ?>
+<link rel="stylesheet" href="<?=PUBLIC_s?>/common/css/picbox.css" type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<?=Pback?>/css/muliimg.css" />
+    <div class="main">
+        <h1><?=$arr['title']?></h1>
+        <div class="content">
+            <div class="info"><span>所属类型：<?=$arr['type'];?></span><span>发布时间：<?=date("Y-m-d h:i:s",$arr['posttime']);?></span></div>
+            <div class="addrfile"><p>当前位置:picture/
+                <?php
+                echo $arr['name'];
+                ?>
+                 </p></div>
+            <?php
+            include_once(FPATH."getallfile.php");
+
+                $arr_files=array();
+                $dir=Vpicture.'/'.$arr['name'];
+                 $dir = iconv('UTF-8', 'gb2312', $dir);//中文要转码
+               $pic= myscandir($dir,$arr_files);
+
+            ?>
+            <div class="imglist">
+                <?php foreach($pic as $val){
+               //中文名无法获取basename
+               $names=explode('/',$val);
+               $len=count($names);
+               $name=$names[($len-1)];
+               //$name = iconv('gb2312', 'UTF-8', $name);//没转码回来出现乱码
+                ?>
+                <div class="imgwrap">
+                    <a rel="lightbox-demo" title="<?=$name;?>" href="Views/picture/<?=$arr['name'].'/'.($name)?>"><img  src="Views/picture/<?=$arr['name'].'/'.($name)?>"></a>
+                    <h3><?=$name;?></h3>
+                </div>
+                <?php }?>
+                <input value="<?=$arr['name'];?>" type="hidden" name="name" id="dirname">
+            </div>
+
+            <ul class="upload-ul clearfix">
+                <li class="upload-pick">
+                    <div class="webuploader-container clearfix" id="goodsUpload"></div>
+                </li>
+            </ul>
+            <div class="img_op">
+                <a id="check_all">全选</a>
+                <a id="dele_all">删除</a>
+                <button type="submit" id="upmuliimg">提交</button>
+            </div>
+
+
+        </div>
+
+    </div>
+<div class="bg">
+    <div class="img"></div>
+    <!--<img src="<?=PUBLIC_s?>/common/images/bg2.jpg">-->
+</div>
+
+<script src="<?=Pback?>/js/jquery.min.js"></script>
+<script type="text/javascript" src="<?=PUBLIC_s?>/common/js/picbox.js"></script>
+<script src="<?=Pback?>/js/webuploader.min.js"></script>
+<script src="<?=Pback?>/js/diyUpload.js"></script>
+<script>
+    $(function(){
+
+        //上传图片
+        var $tgaUpload = $('#goodsUpload').diyUpload({
+            url:'index.php?c=picture&a=muli_img_upload',
+            success:function( data ) { },
+            error:function( err ) { },
+            buttonText : '',
+            accept: {
+                title: "Images",
+                extensions: 'gif,jpg,jpeg,bmp,png'
+            },
+            thumb:{
+                width:120,
+                height:90,
+                quality:100,
+                allowMagnify:true,
+                crop:true,
+                type:""
+            }
+        });
+        /*全选*/
+        $("#check_all").click(function () {
+            if($(this).data("checked")){
+                $(this).data("checked",0);
+                $(".upload-ul .check_img").hide();
+                $(".upload-ul .diyUploadHover").removeClass("checked_li");
+
+            }else {
+                $(this).data("checked",1);
+                $(".upload-ul .check_img").show();
+                $(".upload-ul .diyUploadHover").addClass("checked_li");
+            }
+
+        });
+        /*删除*/
+        $("#dele_all").click(function () {
+            $(".upload-ul .check_img").each(function(i,ele){
+                if($(ele).is(":visible")){
+                    $(ele).parent().remove();
+                }
+            });
+        });
+
+        /*将图片传到后台，进行存储，返回地址*/
+        $("#upmuliimg").click(function () {
+            /*获取图片 的base64数据*/
+            var datas=[];checked_li=[];
+            $(".upload-ul .check_img").each(function(i,ele) {
+                if ($(ele).is(":visible")) {
+                    datas[i]= $(ele).next().find("img").attr("src");
+                    checked_li[i]= $(ele).parent();
+                }
+            });
+            if(datas.length>0){
+                var name=$("#dirname").val();
+                $.ajax({
+                    url:"index.php?c=picture&a=muli_img_upload",
+                    type:"post",
+                    data:{name:name,datas:datas},
+                    success:function (rtn) {
+                        console.log(rtn);
+                        var names=JSON.parse(rtn).data
+                        if(names){
+                            var htmlstr='';
+                           var len=names.length;
+                           for (var i=0;i<len;i++){
+                               htmlstr +=gethtml(datas[i],names[i]);
+                               $(checked_li[i]).remove();
+                           }
+                           alert("上传成功！");
+                           $(".imglist").append(htmlstr);
+                        }
+
+
+                    }
+                });
+                function gethtml(val,name) {
+                    var html='<div class="imgwrap"><a rel="lightbox-demo" title="'+name+'" href="'+val+'"><img  src="'+val+'"></a></div>';
+                    return html;
+                }
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+    <?php
+    $title=empty($title)? $GLOBALS['cfg_seotitle']:$title;
+    $keywords=empty($keywords)? $GLOBALS['cfg_keyword']:$keywords;
+    $description=empty($description)? $GLOBALS['cfg_description']:$description;
+    ?>
+<title><?=$title?></title>
+    <meta name="360-site-verification" content="95e74172a6d2c57f5c75b5c4fa28f4cf" />
+<meta data-n-head="true" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="keywords" content="<?=$keywords?>" />
+<meta name="description" content="<?=$description?>" />
+
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link href="<?=Pmain?>/css/styles.css" rel="stylesheet">
+<link href="<?=Pmain?>/fonts/iconfont.css" rel="stylesheet">
+<!--[if lt IE 9]>
+<script src="<?=Pmain?>/js/modernizr.js"></script>
+<![endif]-->
+</head>
+<body>
+
+<header id="header">
+    <div class="container">
+        <h1 class="logo"><a href="/"><img src="/logo.png" alt="雄--个人博客"></a> </h1>
+        <nav id="nav">
+            <ul>
+                <li><a href="/">首页</a></li>
+                <?=$this->nav;?>
+            </ul>
+            <script>
+                var obj=null;
+                var As=document.getElementById('nav').getElementsByTagName('a');
+                obj = As[0];
+                obj.id='nav_current';
+            </script>
+        </nav>
+        <div class="mobile_wrap"><i class="iconfont icon-iconmore"></i> </div>
+    </div>
+
+ </header>

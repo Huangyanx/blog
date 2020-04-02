@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+    <?php
+    $title=empty($title)? $GLOBALS['cfg_seotitle']:$title;
+    $keywords=empty($keywords)? $GLOBALS['cfg_keyword']:$keywords;
+    $description=empty($description)? $GLOBALS['cfg_description']:$description;
+    ?>
+<title><?=$title?></title>
+<meta data-n-head="true" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="keywords" content="<?=$keywords?>" />
+<meta name="description" content="<?=$description?>" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link href="<?=Pmain?>/css/styles.css" rel="stylesheet">
+<link href="<?=Pmain?>/fonts/iconfont.css" rel="stylesheet">
+<!--[if lt IE 9]>
+<script src="<?=Pmain?>/js/modernizr.js"></script>
+<![endif]-->
+</head>
+<body>
+
+<header id="header">
+    <div class="container">
+        <h2 class="logo" style="margin-top: -6px;"><a href="/"><img src="/logo.png" alt="雄--个人博客"></a> </h2>
+        <nav id="nav">
+            <ul>
+                <li><a href="/">首页</a></li>
+                <?=$this->nav;?>
+            </ul>
+           
+        </nav>
+        <div class="mobile_wrap"><i class="iconfont icon-iconmore"></i> </div>
+    </div>
+    <script>
+        var obj=null;
+        var As=document.getElementById('nav').getElementsByTagName('a');
+        obj = As[0];
+        for(i=1;i<As.length;i++){
+            if(As[i].getAttribute('href')===location.pathname ) {
+                obj=As[i]; break;
+            }
+        }
+        obj.id='nav_current';
+    </script>
+
+ </header>
+<script src="<?=Pback?>/js/jquery2.0.3.min.js"></script>

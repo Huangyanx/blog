@@ -1,0 +1,30 @@
+object(connectDb)#2 (10) {
+ ["linkid"]=> resource(7) of type (mysql link)
+ ["isclose"]=> bool(false) 
+["dbinfo"]=> array(6) { 
+["db_host"]=> string(9) "127.0.0.1" ["db_user"]=> string(4) "root" 
+["db_pwd"]=> string(4) "root" ["db_name"]=> string(6) "mjlife" 
+["db_tablepre"]=> string(5) "dede_" ["db_charset"]=> string(4) "utf8" 
+}
+ ["db_host"]=> string(9) "127.0.0.1" ["db_user"]=> string(4) "root" 
+["db_pwd"]=> string(4) "root" ["db_name"]=> string(6) "mjlife" 
+["db_tablepre"]=> string(5) "dede_" 
+["result"]=> array(1) { ["me"]=> int(0) } ["querystring"]=> string(0) "" } 
+*******************
+object(MySql)#1 (11) { 
+["db_host"]=> string(9) "127.0.0.1" 
+["db_user"]=> string(4) "root"
+ ["db_pwd"]=> string(4) "root" 
+["db_name"]=> string(11) "appointment" 
+["db_tablepre"]=> string(3) "yy_" 
+["linkid"]=> resource(7) of type (mysql link)
+["result"]=> array(1) { ["me"]=> int(0) }
+ ["querystring"]=> string(0) ""
+ ["isclose"]=> bool(false)
+ ["safecheck"]=> bool(true)
+ ["dbinfo"]=> array(6) {
+ ["db_host"]=> string(9) "127.0.0.1" 
+["db_user"]=> string(4) "root" ["db_pwd"]=> string(4) "root" 
+["db_name"]=> string(11) "appointment" 
+["db_tablepre"]=> string(3) "yy_" ["db_charset"]=> string(4) "utf8" } 
+} 

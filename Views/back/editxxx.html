@@ -1,0 +1,161 @@
+<?php include_once Vback."/public/header.html";?>
+    <section class="wrapper">
+    <div class="form-w3layouts">
+        <!-- page start-->
+        <!-- page start-->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                       添加文章
+                    </header>
+                    <div class="panel-body">
+
+
+                        <form class="form-horizontal bucket-form addform" method="post" action="index.php?c=back&a=savexxx" enctype="multipart/form-data" onsubmit="return sureform();">
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">文件标题</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group m-bot15">
+                                        <input type="text" class="form-control" name="title" placeholder="Username" value="<?=$arr['title']?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">所属栏目</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group m-bot15">
+                                        <select name="classid">
+                                            <option value="1"  <?php if($arr['classid']==='1') echo selected;?> >诊所</option>
+                                            <option value="2" <?php if($arr['classid']==='2') echo selected;?> >化验所</option>
+                                            <option value="3" <?php if($arr['classid']==='3') echo selected;?> >服务</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">作者</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group m-bot15">
+                                        <input type="text" class="form-control" name="author" placeholder="Username" value="<?=$arr['author']?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">上传缩略图</label>
+                                <div class="col-lg-6">
+                                    <div class=" col-lg-6 m-bot15">
+                                        <input type="text" class="form-control upimg" name="upimgname" placeholder="Username" value="<?=$arr['picurl']?>">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="file" name="upimg">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group headimg-list">
+                                <label class="col-sm-3 control-label col-lg-3">头部图片</label>
+                                <div class="col-lg-6">
+                                    <?php
+                                    $headimg=unserialize($arr['headimg']);
+                                    foreach ($headimg as $key=>$val){
+                                    ?>
+                                    <div class=" col-lg-6 m-bot15">
+                                        <input type="text" class="form-control" name="headimg[]" placeholder="Username" value="<?=$val;?>">
+                                    </div>
+
+                                    <?php
+                                     if($key===0){ ?>
+                                    <div class="col-lg-6">
+                                        <div class="add-headimg" style="cursor: pointer;"><img src="<?=Pback?>/images/add.png" style="width: 35px;"></div>
+                                    </div>
+                                     <?php }} ?>
+
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">描述</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group m-bot15">
+                                        <textarea type="text" class="form-control" name="description" style="width:100%;height: 100px;" ><?=$arr['description']?></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">详情内容</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group input-group-lg">
+                                        <textarea type="text" class="form-control input-lg kindeditor" rows="10" cols="70" name="content" id="content" placeholder="" style="width:100%;height: 150px;"><?=$arr['content']?></textarea>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">浏览次数</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group m-bot15">
+                                        <input type="text" class="form-control" name="hits" placeholder="" value="<?=$arr['hits']?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3"></label>
+                                <div class="col-lg-3">
+                                    <div class="input-group m-bot15">
+                                        <input type="submit" class="form-control btn-success add-btn" value="提交">
+                                        <input type="hidden" name="action" value="edit">
+                                        <input type="hidden" name="id" value="<?=$arr['id']?>">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="input-group m-bot15">
+                                        <a  class="btn btn-default form-control" href="javascript:history.back(1);">返回</a>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- page end-->
+    </div>
+</section>
+<?php include_once Vback."/public/footer.html";?>
+<script src="<?=Pback?>/js/filedrag.js"></script>
+<script type="text/javascript">
+    /*缩略图名称*/
+    $("input[name='upimg']").change(function () {
+        $(".upimg").val(this.files[0].name);
+        //console.log(this.files);
+    });
+    //添加文件确认
+    function sureform() {
+
+        if(($("#mySelect").val()!='')&&$("#content")!=''){
+            return true;
+
+        }else {
+            alert("请填写完整类型和内容");
+            return false;
+        }
+    }
+    $(".add-headimg").click(function () {
+        var html='<div class="col-lg-6 more-imgs">'+
+                    '<input type="text" class="form-control" name="headimg[]" placeholder="头部图片"></div> <div class="col-lg-6 reduce-headimg" style="cursor: pointer;"><img src="<?=Pback?>/images/reduce.png" style="width: 35px;"></div> ';
+        $(".headimg-list>.col-lg-6").append(html);
+        $(".reduce-headimg").bind("click",function () {
+            $(this).prev().remove();
+            $(this).remove();
+        })
+    });
+
+
+</script>
+

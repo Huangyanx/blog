@@ -1,0 +1,222 @@
+<?php include_once Vback."/public/header.html";?>
+    <section class="wrapper">
+        <div class="table-agile-info">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    总分类列表
+                </div>
+                <!--添加表单-->
+                <div class="row w3-res-tb add-detail">
+                    <form onsubmit="return false" id="addform">
+                        <div class="col-sm-6 col-xs-12">
+                            <div class="form-group ">
+                                <label for="cname" class="control-label col-lg-3"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">名称（必填）</font></font></label>
+                                <div class="col-lg-6">
+                                    <input class=" form-control" id="cname" name="name" minlength="2" type="text" required="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <div class="form-group ">
+                                <button class="btn btn-success add-submit">提交</button>
+                            </div>
+                        </div>
+                        <input type="hidden" class="actions" name="action" value="add">
+
+                    </form>
+
+                </div>
+                <div class="row w3-res-tb">
+                    <div class="col-sm-5 m-b-xs">
+                        <select class="form-control w-sm inline v-middle" name="check" id="handles">
+                            <option value="dele">删除</option>
+                            <option value="1">Delete selected</option>
+                            <option value="2">Bulk edit</option>
+                            <option value="3">Export</option>
+                        </select>
+                        <button class="btn btn-sm btn-default sure-btn">确认</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <a href="javascript:;" class="btn btn-success add" id="addtype">添加</a>
+                        </div>
+
+
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <input type="text" class="input-sm form-control keyword" name="keyword" placeholder="请输入类型名称">
+                            <span class="input-group-btn">
+                            <button class="btn btn-sm btn-default" id="key-btn" type="button">搜索</button>
+          </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive" style="padding-left: 10px;">
+                    <table id="listTable" class="list table">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="check_all"> id</th>
+                            <th>名称</th>
+                            <th>标记</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+
+                        if(count($arr['res'])>0){
+                            foreach($arr['res'] as $val){
+                        ?>
+                           <tr>
+                               <td> <input type="checkbox" name="check_id" class="check_id" value="<?=$val['id']?>"> <?=$val['id']?></td>
+                               <td><?=$val['name']?></td>
+                               <td><?=$val['sign']?></td>
+                               <td>
+                                   <a  href="javascript:;" onclick="edit(this)" class="active" ui-toggle-class=""><i class="fa fa-edit text-success text-active"></i></a>
+                                   <a href="javascript:dele_sing(<?=$val['id']?>);" class="active" ui-toggle-class=""></i><i class="fa fa-times text-danger text"></i></a>
+                               </td>
+                           </tr>
+                        <?php } }?>
+                        </tbody>
+                    </table>
+
+                </div>
+                <footer class="panel-footer">
+                    <div class="row">
+
+                        <div class="col-sm-5 text-center">
+                            <small class="text-muted inline m-t-sm m-b-sm">共 <?=$arr_oth['num'];?> 条记录</small>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </section>
+<?php include_once Vback."/public/footer.html";?>
+<script>
+    /*添加表单显示*/
+    $("#addtype").click(function () {
+        if($(this).text()=='关闭'){
+            $("#cname").val('');
+            $("#addform input[name='id']").remove();
+            $(".actions").val("add");
+            $(this).text('添加')
+        }
+
+        $(".add-detail").slideToggle();
+    });
+    /*添加类型*/
+    $(".add-submit").click(function () {
+        if($("#cname").val()!=''){
+            $data=$("#addform").serialize();
+            $.get("index.php?c=back&a=addtypes",$data,function (rtn) {
+                //var res=$.parseJSON(rtn);
+                console.log(rtn);
+               if(rtn.status){
+                   $("#cname").val(' ');
+                   $(".add-detail").slideToggle();
+                   alert(rtn.msg);
+                   location.href="index.php?c=back&a=types";
+               }else{
+                   alert(rtn.msg);
+               }
+            },'json');
+        }
+    });
+    /*列表的处理*/
+    $(".tree_btns").click(function () {
+       if($(this).hasClass("roots_open")){
+           $(this).removeClass("roots_open").addClass("roots_close");
+           $(this).next().next().next().slideToggle();
+       }else{
+           $(this).removeClass("roots_close").addClass("roots_open");
+           $(this).next().next().next().slideToggle();
+       }
+    });
+    /*搜索*/
+    $("#key-btn").click(function () {
+        if($(".keyword").val()!=''){
+            location.href="index.php?c=back&a=types&keyword="+$(".keyword").val();
+        }
+    })
+    //回车触发搜索
+    $(".keyword").keyup(function(event){
+        if(event.keyCode ==13){
+            $("#key-btn").trigger("click");
+        }
+    });
+    /*删除   单个*/
+    function dele_sing(id) {
+        var sure=window.confirm("确认删除吗？");
+        if(sure){
+            $.get("index.php?c=back&a=deletypes",{id:id},function (rtn) {
+                // var res=$.parseJSON(rtn);
+                if(rtn.status){
+                    alert("删除成功");
+                    location.href="index.php?c=back&a=types";
+                }else {
+                    alert("删除失败");
+                }
+            },'json');
+        }
+    }
+
+    /*多选 操作确认*/
+    $(".sure-btn").click(function () {
+        var handles=$("#handles").val();
+        switch (handles){
+            case "dele":
+                var id="(",glue='';
+                $(".check_id").each(function (i,ele) {
+                    if($(ele).is(":checked")){
+                        id+=glue+$(ele).val();
+                        glue=",";
+                    }
+                });
+                id+=")";
+            console.log($(".check_id"));
+            console.log(id);
+                dele_sing(id);
+                break;
+            default:
+                break;
+        }
+    });
+
+    /*多选*/
+    $("#check_all").click(function () {
+        if($(this).is(":checked")){
+            $(".check_id").prop('checked',true);
+        }else {
+            $(".check_id").prop('checked',false);
+        }
+    });
+
+    //编辑
+    function edit(obj) {
+            var id=$(obj).parent().siblings()[0].innerText;
+            var name=$(obj).parent().siblings()[1].innerText;
+            //赋值
+            $("#cname").val(name);
+            if($("#addform input[name='id']").get(0)){
+                $("#addform input[name='id']").val(id);
+            }else{
+                var input="<input value='"+id+"' type='hidden' name='id'>";
+                $("#addform").append(input);
+            }
+            $(".actions").val("edit");
+            $("#addtype").text("关闭");
+            $(".add-detail").show();
+
+    }
+    function add_chil(parent) {
+            $("select[name='parentid']").val(parent);
+            $('.add-detail').data("add_chil",1);
+            $("#addtype").text("关闭");
+            $(".add-detail").show();
+
+    }
+
+
+</script>

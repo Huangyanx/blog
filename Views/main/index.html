@@ -1,0 +1,152 @@
+<?php include_once Vmain."/header_index.html";?>
+
+ <div class="mainContent">
+      <div class="container">
+          <!--<div class="broadcast">
+            <p><span class="iconfont icon-guangbo"></span>网站还在修改中
+            </p>
+          </div>-->
+          <div class="blogitem">
+            <article>
+              <div class='index-list'>
+                <h2 class="lists-title">
+                  <a href="/main/article" ><span class="iconfont icon-wenzhang2"></span>最新文章</a>
+                </h2>
+                <div class="lists article-list">
+
+                  <?php
+                    foreach($article as $val){
+                    $img=get_img(stripslashes($val['content']),$val['upimg']);
+                  ?>
+                  <div class="list-one">
+
+                    <div class="img col-3"> <a href="<?=$GLOBALS['cfg_weburl']?>/main/articleshow?id-<?=$val['id'];?>"><img src="<?=$img?>"></a></div>
+                      <div class="cont col-7">
+                        <h3 class="list-title"> <a href="<?=$GLOBALS['cfg_weburl']?>/main/articleshow?id-<?=$val['id'];?>"><?=$val['title'];?></a></h3>
+                        <div class="info">
+                          <span class="mu-ml"><i class="iconfont icon-fenlei" title="<?=$val['typename'];?>分类"></i><a href=""><?=$val['typename'];?></a></span>
+                          <span class="mu-ml-clock" title="添加时间<?=date('Y-m-d',$val['posttime']);?>"><i class="iconfont icon-zlicondate01"></i><?=date('Y-m-d',$val['posttime']);?></span>
+                          <span class="mu-ml-eye" title="浏览<?=$val['hits'];?>次"><i class="iconfont icon-liulan"></i><?=$val['hits'];?>次</span>
+                          <span class="mu-ml-comment" title="条评论"><i class="iconfont icon-zuixindongtai"></i><?=$val['commentnum']?>条</span></div>
+                        <p><?php  if(!empty($val['description'])){ echo cut_len($val['description']); }
+                          else{ echo cut_len(stripslashes($val['content']));} ?></p>
+                      </div>
+
+                  </div>
+                  <?php }?>
+
+                  <div class="clear"></div>
+                </div>
+
+              </div>
+            </article>
+            <article>
+                <div class='index-list'>
+                  <h2 class="lists-title">
+                    <a href="<?=$GLOBALS['cfg_weburl']?>/main/templates" ><span class="iconfont icon-xiazai"></span>最新模板</a>
+                  </h2>
+                  <div class="lists index-file">
+                    <?php
+                    foreach($file as $val){
+                    $img=empty($val['upimg']) ? Pcommon.'/images/nopicture.png':$val['upimg'];
+                  ?>
+                    <div class="list-one col-31">
+                      <a href="/<?=$val['url']?>" target="_blank">
+                        <div class="img">
+                          <img src="<?=$img;?>">
+                          <div class="file_text"><?=$val['title']?></div>
+                        </div>
+                      </a>
+                    </div>
+                    <?php }?>
+                    <div class="clear"></div>
+                  </div>
+
+                </div>
+              </article>
+              <article>
+                <div class='index-list'>
+                  <h2 class="lists-title">
+                    <a href="javascript:;" ><span class="iconfont icon-tupian"></span>最新图片</a>
+                  </h2>
+                  <div class="lists">
+                    <?php
+                    foreach($picture as $val){
+                      if(!empty($val['url'])){
+                        $img=$val['url'];
+                      }else if($val['isdir']){
+                        $img=Pcommon.'/images/nopicture.png';
+                      }else if(!empty($val['upimg'])){
+                        $img=$val['upimg'];
+                      }else{
+                        $img=Pcommon.'/images/nopicture.png';
+                      }
+
+                  ?>
+                    <div class="list-one col-31">
+                      <div class="img"><a href="<?=$val['url']?>"> <img src="<?=$img?>"></a></div>
+                    </div>
+                    <?php }?>
+
+                    <div class="clear"></div>
+                  </div>
+
+                </div>
+              </article>
+              <article>
+                <div class='index-list'>
+                  <h2 class="lists-title">
+                    <a href="<?=$GLOBALS['cfg_weburl']?>/main/manual" ><span class="iconfont icon-bangzhushouce"></span>手册</a>
+                  </h2>
+                  <div class="lists">
+                    <?php
+                    foreach($manual_list as $val){
+                  ?>
+                    <div class="manual_one col-51">
+                      <a href="<?=$val['linkurl']?>" target="_blank">
+                        <div class="wrap">
+                          <div class="img"><img src="<?=Pcommon?>/images/manual_icon.png"></div>
+                          <h3><span><?=$val['name']?></span></h3>
+                          <div class="clear"></div>
+                        </div>
+                      </a>
+
+                    </div>
+
+                    <?php }?>
+
+                    <div class="clear"></div>
+                  </div>
+
+                </div>
+              </article>
+              <article>
+                <div class='index-list'>
+                  <h2 class="lists-title">
+                    <a href="<?=$GLOBALS['cfg_weburl']?>/main/website" ><span class="iconfont icon-ziyuan-copy"></span>网址收藏</a>
+                  </h2>
+                  <div class="lists">
+                    <?php
+                   foreach($website_list as $val){
+                   $idname="website_block".$val['id'];
+                  ?>
+                    <div class="list-one  col-51">
+                      <a href="<?=$GLOBALS['cfg_weburl']?>/main/website#<?=$idname?>" target="_blank" rel="nofollow">
+                        <div class="extra-wrap">
+                          <h3><span><?=$val['name']?></span></h3>
+                        </div>
+                      </a>
+
+                    </div>
+                    <?php }?>
+                    <div class="clear"></div>
+                  </div>
+
+                </div>
+              </article>
+
+          </div>
+        <?php include_once Vmain."/left.html";?>
+    </div>
+ </div>
+<?php include_once Vmain."/footer_index.html";?>

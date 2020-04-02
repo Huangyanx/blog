@@ -1,0 +1,116 @@
+<?php
+ include_once Vmain."/header.html";?>
+ <div class="mainContent">
+    <div class="container">
+        <div class="blogitem">
+              <article>
+                <div class='index-list'>
+                  <h1 class="lists-title">
+                    <a href="javascript:;" ><span class="iconfont icon-wenzhang2"></span>文章</a>
+                  </h1>
+                  <div class="lists article-list">
+                    <?php
+                      foreach($article as $val){
+                      $img=get_img(stripslashes($val['content']),$val['upimg']);
+                    ?>
+                    <div class="list-one">
+                        <div class="img col-3"><a href="<?=$GLOBALS['cfg_weburl']?>/main/articleshow?id-<?=$val['id'];?>"><img alt="<?=$val['title'];?>" src="<?=$img?>"></a> </div>
+                        <div class="cont col-7">
+                            <h3 class="list-title"><a href="<?=$GLOBALS['cfg_weburl']?>/main/articleshow?id-<?=$val['id'];?>"><?=$val['title'];?></a></h3>
+                          <div class="info">
+                              <span class="mu-ml"><i class="iconfont icon-fenlei" title="<?=$val['typename'];?>分类"></i><a href="#"><?=$val['typename'];?></a></span>
+                              <span class="mu-ml-clock" title="添加时间<?=date('Y-m-d',$val['posttime']);?>"><i class="iconfont icon-zlicondate01"></i><?=date('Y-m-d',$val['posttime']);?></span>
+                              <span class="mu-ml-eye" title="浏览<?=$val['hits'];?>次"><i class="iconfont icon-liulan"></i><?=$val['hits'];?>次</span>
+                              <span class="mu-ml-comment" title="条评论"><i class="iconfont icon-zuixindongtai"></i><?=$val['commentnum'];?>条</span></div>
+                          <p><?php  if(!empty($val['description'])){ echo cut_len($val['description']); }
+                          else{ echo cut_len(stripslashes($val['content']));}
+                       ?></p>
+                        </div>
+
+
+                    </div>
+                    <?php }?>
+
+                    <div class="clear"></div>
+                  </div>
+
+                </div>
+              </article>
+              <div class="pages">
+                <a href="<?=$arr_oth['pagelist']['first_page']?>"><<</a>
+                <a href="<?=$arr_oth['pagelist']['p_pre']?>"><</a>
+                <?php
+                                        foreach($arr_oth['pagelist']['p_list'] as $val){
+                                            echo "<a href='".$arr_oth['pagelist']['url']."page-".$val."'>".$val."</a>";
+                }
+                ?>
+                <a href="<?=$arr_oth['pagelist']['p_next']?>"> > </a>
+                <a href="<?=$arr_oth['pagelist']['last_page']?>"> >> </a>
+
+              </div>
+
+        </div>
+      <?php include_once Vmain."/left.html";?>
+    </div>
+ </div>
+<?php include_once Vmain."/footer.html";?>
+<script>
+    //var location=window.location;
+    console.log(window.location);
+    console.log(window.location.href);
+    console.log(window.location.href.split("?"));
+    console.log(window.location.hash);
+    console.log(window.location.host);
+    console.log(window.location.search);
+    var canshu = window.location.search;
+    var loc = canshu.substring(canshu.lastIndexOf('=')+1, canshu.length);
+    console.log(loc);
+
+    //返回的是对象形式的参数
+    function getUrlArgObject(){
+        var args=new Object();
+        var query=location.search.substring(1);//获取查询串
+        var pairs=query.split(",");//在逗号处断开
+        for(var i=0;i<pairs.length;i++){
+            var pos=pairs[i].indexOf('=');//查找name=value
+            if(pos==-1){//如果没有找到就跳过
+                continue;
+            }
+            var argname=pairs[i].substring(0,pos);//提取name
+            var value=pairs[i].substring(pos+1);//提取value
+            args[argname]=unescape(value);//存为属性
+        }
+        return args;//返回对象
+    }
+    var k=getUrlArgObject();
+    console.log(k);
+    function getUrlArgStr(){
+        var q=location.search.substr(1);
+        var qs=q.split('&');
+        var argStr='';
+        if(qs){
+            for(var i=0;i<qs.length;i++){
+                argStr+=qs[i].substring(0,qs[i].indexOf('='))+'='+qs[i].substring(qs[i].indexOf('=')+1)+'&';
+            }
+        }
+        return argStr;
+    }
+    var h=getUrlArgStr();
+    console.log(h);
+    function getUrlArgStr1(){
+        var q=location.search.substr(1);
+        var qs=q.split('&');
+        var argStr=[];
+        if(qs){
+            for(var i=0;i<qs.length;i++){
+                var g=qs[i].substring(0,qs[i].indexOf('='));
+                argStr[g]=qs[i].substring(qs[i].indexOf('=')+1);
+            }
+        }
+        return argStr;
+    }
+    var i=getUrlArgStr1();
+console.log(i);
+console.log(i['c']);
+
+</script>

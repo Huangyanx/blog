@@ -1,0 +1,147 @@
+<?php
+ include_once Vmain."/header.html";?>
+ <div class="mainContent">
+    <div class="container">
+        <div class="blogitem">
+              <article>
+                <div class='index-list'>
+                  <h1 class="pad10">
+                    <a href="javascript:;" class="red" ><span class="iconfont icon-wenzhang2"></span> 关键字搜索</a>
+                  </h1>
+                    <div class="searchBpx">
+                        <form class="" action="/main/search">
+                            <div class="form-group col-31">
+                                <input class="form-control" name="keyword" value="<?=$arr_oth['keyword']?>" placeholder="请输入关键字" required>
+                            </div>
+                            <div class="form-group col-31">
+                               <select class="form-control form-select" name="range" >
+                                   <option value="0" selected="selected">全部</option>
+                                   <option value="1" >文章</option>
+                                   <option value="3" >文件</option>
+                                   <option value="5" >手册</option>
+                                   <option value="2" >收藏</option>
+                               </select>
+                            </div>
+                            <div class="form-group col-31">
+                                <input type="submit" value="搜索" class="search-btn search-btn1 ">
+                            </div>
+                            <div class="clear"></div>
+                        </form>
+                    </div>
+                    <hr class="hr">
+                  <div class="lists article-list search-list">
+                    <?php
+
+                   if(count($article)>0){
+                      foreach($article as $val){
+                          switch($val['tableid']){
+                             case 1: $gourl=$GLOBALS['cfg_weburl'].'/main/articleshow?id-'.$val['id'];$gourl2='/main/article';$typename='文章'; break;
+                             case 2: $gourl=$GLOBALS['cfg_weburl'].'/main/website';$gourl2='/main/website';$typename='网址收藏'; break;
+                             case 3: $gourl=empty($val['belong']) ? $GLOBALS['cfg_weburl'].'/main/templates' : $GLOBALS['cfg_weburl'].'/'.$val['belong'];$gourl2='/main/templates';$typename='模板'; break;
+                             case 5: $gourl=$GLOBALS['cfg_weburl'].'/main/manual/?belong='.$val['belong'].'&mid='.$val['id']; $gourl2='/main/manual';$typename='手册'; break;
+                             default: $gourl=$GLOBALS['cfg_weburl'].'/main/articleshow?id-'.$val['id'];$gourl2='/main/article';$typename='文章'; break;
+                          }
+                          $title=str_replace($arr_oth['keyword'],"<span class='red'>".$arr_oth['keyword']."</span>",$val['title']);
+                             $remarks=empty($val['remarks'])? '' :str_replace($arr_oth['keyword'],"<span class='red'>".$arr_oth['keyword']."</span>",$val['remarks']);
+                             $addtime=empty($val['posttime']) ? '':date('Y-m-d',$val['posttime']);
+                    ?>
+                    <div class="list-one col-51">
+                        <div class="cont">
+                            <h3 class="list-title"><a href="<?=$gourl;?>" target="_blank"><?=$title;?></a></h3>
+                          <div class="info">
+                              <span class="mu-ml"><i class="iconfont icon-fenlei" title="<?=$typename;?>分类"></i><a href="<?=$gourl2?>"><?=$typename;?></a></span>
+                              <span class="mu-ml-clock" title="发布时间<?=date('Y-m-d',$val['posttime']);?>"><i class="iconfont icon-zlicondate01"></i><?=$addtime;?></span>
+                              <span class="mu-ml-eye" title="浏览<?=$val['hits'];?>次"><i class="iconfont icon-liulan"></i><?=$val['hits'];?>次</span>
+                              </div>
+                          <p><?=$remarks;?></p>
+                        </div>
+
+
+                    </div>
+                    <?php }
+                    }else{echo "暂无相关内容";}
+                    ?>
+
+                    <div class="clear"></div>
+                  </div>
+
+                </div>
+              </article>
+              <div class="pages">
+                <a href="<?=$arr_oth['pagelist']['first_page']?>"><<</a>
+                <a href="<?=$arr_oth['pagelist']['p_pre']?>"><</a>
+                <?php
+                                        foreach($arr_oth['pagelist']['p_list'] as $val){
+                                            echo "<a href='".$arr_oth['pagelist']['url']."page=".$val."'>".$val."</a>";
+                }
+                ?>
+                <a href="<?=$arr_oth['pagelist']['p_next']?>"> > </a>
+                <a href="<?=$arr_oth['pagelist']['last_page']?>"> >> </a>
+
+              </div>
+
+        </div>
+      <?php include_once Vmain."/left.html";?>
+    </div>
+ </div>
+<?php include_once Vmain."/footer.html";?>
+<script>
+    //var location=window.location;
+    console.log(window.location);
+    console.log(window.location.href);
+    console.log(window.location.href.split("?"));
+    console.log(window.location.hash);
+    console.log(window.location.host);
+    console.log(window.location.search);
+    var canshu = window.location.search;
+    var loc = canshu.substring(canshu.lastIndexOf('=')+1, canshu.length);
+    console.log(loc);
+
+    //返回的是对象形式的参数
+    function getUrlArgObject(){
+        var args=new Object();
+        var query=location.search.substring(1);//获取查询串
+        var pairs=query.split(",");//在逗号处断开
+        for(var i=0;i<pairs.length;i++){
+            var pos=pairs[i].indexOf('=');//查找name=value
+            if(pos==-1){//如果没有找到就跳过
+                continue;
+            }
+            var argname=pairs[i].substring(0,pos);//提取name
+            var value=pairs[i].substring(pos+1);//提取value
+            args[argname]=unescape(value);//存为属性
+        }
+        return args;//返回对象
+    }
+    var k=getUrlArgObject();
+    console.log(k);
+    function getUrlArgStr(){
+        var q=location.search.substr(1);
+        var qs=q.split('&');
+        var argStr='';
+        if(qs){
+            for(var i=0;i<qs.length;i++){
+                argStr+=qs[i].substring(0,qs[i].indexOf('='))+'='+qs[i].substring(qs[i].indexOf('=')+1)+'&';
+            }
+        }
+        return argStr;
+    }
+    var h=getUrlArgStr();
+    console.log(h);
+    function getUrlArgStr1(){
+        var q=location.search.substr(1);
+        var qs=q.split('&');
+        var argStr=[];
+        if(qs){
+            for(var i=0;i<qs.length;i++){
+                var g=qs[i].substring(0,qs[i].indexOf('='));
+                argStr[g]=qs[i].substring(qs[i].indexOf('=')+1);
+            }
+        }
+        return argStr;
+    }
+    var i=getUrlArgStr1();
+console.log(i);
+console.log(i['c']);
+
+</script>

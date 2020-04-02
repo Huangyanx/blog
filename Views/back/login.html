@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<head>
+<title>Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+
+<!-- bootstrap-css -->
+<link rel="stylesheet" href="<?=Pback?>/css/bootstrap.min.css" >
+<!-- //bootstrap-css -->
+<!-- Custom CSS -->
+<link href="<?=Pback?>/css/style.css" rel='stylesheet' type='text/css' />
+<link href="<?=Pback?>/css/style-responsive.css" rel="stylesheet"/>
+
+
+</head>
+<body>
+<div class="log-w3">
+<div class="w3layouts-main">
+	<h2>Sign In Now</h2>
+		<form  method="post" onsubmit="return false;">
+			<input type="email" class="account ggg" name="Email" placeholder="E-MAIL" required="">
+			<input type="password" class="pwd ggg" name="Password" placeholder="PASSWORD" required="">
+			<span><label><input type="checkbox" class="rememberMe" value="1" />Remember Me</label></span>
+			<h6><a href="#">Forgot Password?</a></h6>
+				<div class="clearfix"></div>
+				<input type="submit" value="Sign In" name="login" id="login">
+		</form>
+		<p>Don't Have an Account ?<a href="registration.html">Create an account</a></p>
+</div>
+</div>
+<script src="<?=Pback?>/js/jquery2.0.3.min.js"></script>
+<script>
+	var account1=getCookie('huangyanxaccount111')||null;
+	var pwd1=getCookie('huangyanxpwd111')||null;
+	if(account1!==null){
+        $('.account').val(account1)
+	}
+	if(pwd1!==null){
+        $('.pwd').val(atob(pwd1));
+	}
+
+	$('#login').click(function () {
+		var account=$.trim($('.account').val());
+		var pwd=$.trim($('.pwd').val());
+		if(account===''){
+		    alert('账号不能为空');
+		    return false;
+		}
+        if(pwd===''){
+            alert('密码不能为空');
+            return false;
+        }
+		if($(".rememberMe:checked").val()!==''){
+			setCookie('huangyanxaccount111',account,100,'/back/login');
+			setCookie('huangyanxpwd111', btoa(pwd),100,'/back/login');
+		}
+        $.ajax({
+			type:'post',
+			url:'/back/doLogin',
+			data:{account:account,pwd:pwd},
+			success:function (rtn) {
+			    if(rtn.status===undefined){
+                    rtn=JSON.parse(rtn);
+				}
+				if(rtn.status==='ok'){
+			        alert('登陆成功！');
+			        location.href="/back/index";
+				}else {
+                    alert(rtn.msg);
+				}
+
+            },
+			error:function (e) {
+				alert('出错啦');
+            }
+		})
+
+    });
+
+    function setCookie(name, value,time,path)		//cookies璁剧疆
+    {
+        var argv = setCookie.arguments;
+        var argc = setCookie.arguments.length;
+        var expires = (argc > 2) ? argv[2] : null;
+        if(expires!=null)
+        {
+            var LargeExpDate = new Date ();
+            LargeExpDate.setTime(LargeExpDate.getTime() + (expires*1000*3600*24));
+        }
+        document.cookie = name + "=" + (escape (value)+((expires == null) ? "" : ("; expires=" +LargeExpDate.toGMTString())))+( ( path ) ? ';path=' + path : '' );
+    }
+
+    function getCookie(Name) {
+        var search = Name + "="
+        if (document.cookie.length > 0) {
+            offset = document.cookie.indexOf(search);
+            if(offset != -1) {
+                offset += search.length;
+                end = document.cookie.indexOf(";", offset);
+                if(end == -1) end = document.cookie.length;
+                return unescape(document.cookie.substring(offset, end));
+            }else {
+                return '';
+            }
+        }
+    }
+</script>
+</body>
+</html>

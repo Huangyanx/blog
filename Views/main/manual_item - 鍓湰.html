@@ -1,0 +1,204 @@
+<?php include_once Vmain."/header.html";?>
+<?php $belong ?>
+<link rel="stylesheet" href="../../../new_yy/public/static/css/common.css">
+<link rel="stylesheet" type="text/css" href="<?=Pcommon?>/css/tree.css">
+<div class="mainContent">
+            <div class="container">
+                <aside>
+                    <section class="accordion aside-list">
+                        <h3 class="aside-title"><?=$title?></h3>
+                        <div class="aside-cont accordionContent">
+
+                                <div class="form-group">
+                                    <input class="input_control keyword" placeholder="请输入关键词">
+                                    <select class="input_control search-belong">
+                                        <option value="all">全部</option>
+                                        <?php
+                                      foreach($manual_list as $val){
+                                    ?>
+                                         <option value="<?php echo $val['name']; ?>" <?php if($belong===$val['name']) echo "selected"; ?>><?php echo $val['name'];  ?></option>
+                                        <?php } ?>
+
+                                    </select>
+                                    <input type="button" value="搜索" class="search-btn">
+                                </div>
+                                <div class="result">
+                                    <ul>
+
+                                    </ul>
+                                </div>
+
+                            <ul id="b" class="tree treeFolder collapse">
+                                <?php
+
+                                function getThirdtree($arr1){
+                                    if(!empty($arr1[0][0])){
+                                        echo "<ul>";
+                                foreach($arr1 as $val){
+                                echo '<li><a autobypy="cjbg" href="javascript:getcontent('.$val['id'].');"><span class="font_pos"><i class="external_small"></i></span>'.$val["name"].'</a>';
+                                if(!empty($val['children'])){ getThirdtree($val['children']);}
+                                echo '</li>';
+                                }
+                                echo "</ul>";
+                            }
+
+                            }
+
+                            foreach($arr as $val){
+
+                            ?>
+                            <li>
+                                <a href="javascript:getcontent(<?=$val['id']?>);" autobypy="bz" dataType="topmenu" childMneu="bzmenus" keyboard="A"><?=$val['name']?></a>
+                                <?php if(!empty($val['children'])){ ?>
+                                <ul id="bzmenus" class="bzmenus_sub">
+                                    <?php
+                                                 foreach($val['children'] as $val1){
+                                            ?>
+                                    <li><a href="javascript:getcontent(<?=$val1['id']?>);"  autobypy="tyhs"><span class="font_pos"><i class="external_small"></i></span><?=$val1['name']?></a>
+                                        <?php if(!empty($val1['children'])){ getThirdtree($val1['children']); } ?>
+                                    </li>
+
+                                    <?php
+                                            }
+                                            ?>
+                                </ul>
+                                <?php } ?>
+
+
+                            </li>
+
+                            <?php
+                                    }
+                                ?>
+                            </ul>
+
+
+                        </div>
+                    </section>
+                </aside>
+                <div class="blogitem">
+                    <article>
+                        <div class='index-list'>
+                            <h2 class="lists-title">
+                                <a href="javascript:;" ><span class="iconfont icon-wenzhang2"></span>
+                                    <?php if(!empty($arr[0]['name'])) echo $arr[0]['name'] ?>
+                                    </a>
+                            </h2>
+                            <div class="lists">
+                                <?php
+                                if(!empty($manual_content['remark'])){
+                                    echo '<div class="manual_description">'.$manual_content['remark'].'</div>';
+
+                                }
+                                ?>
+                                <?=stripslashes($manual_content['content'])?>
+                            </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+</div>
+
+<?php include_once Vmain."/footer.html";?>
+<script>
+    var belong="<?php echo $belong; ?>";
+    var dId=getCookie('huangyanx'+belong+'Id')||null;
+    if (dId !==null){
+       getcontent(dId);
+    }
+    //获取内容
+    function getcontent(id){
+        //console.log(id);
+        $('.lists').html('').animate({height:'toggle'},50);
+        $.post("/index.php?c=manual&a=show", {id: id}, function (res) {
+            setCookie('huangyanx'+belong+'Id',id,1,'/main/manual/');
+            var title=res.data.name;
+            var content=res.data.content;
+            // var remark=res.data.remark;
+            $('.lists-title a').text(title);
+            $('.lists').html(content).animate({height:'toggle'},500);
+        },'json');
+    }
+
+    function setCookie(name, value,time,path)		//cookies
+    {
+        var argv = setCookie.arguments;
+        var argc = setCookie.arguments.length;
+        var expires = (argc > 2) ? argv[2] : null;
+        if(expires!=null)
+        {
+            var LargeExpDate = new Date ();
+            LargeExpDate.setTime(LargeExpDate.getTime() + (expires*1000*3600*24));
+        }
+        document.cookie = name + "=" + (escape (value)+((expires == null) ? "" : ("; expires=" +LargeExpDate.toGMTString())))+( ( path ) ? ';path=' + path : '' );
+    }
+
+    function getCookie(Name) {
+        var search = Name + "="
+        if (document.cookie.length > 0) {
+            offset = document.cookie.indexOf(search);
+            if(offset != -1) {
+                offset += search.length;
+                end = document.cookie.indexOf(";", offset);
+                if(end == -1) end = document.cookie.length;
+                return unescape(document.cookie.substring(offset, end));
+            }else {
+                return '';
+            }
+        }
+    }
+
+    $('.search-btn').click(function () {
+        var keyword=$.trim($('.keyword').val());
+        var belong=$('.search-belong').val();
+        if(keyword===''){
+            alert('请输入关键字');
+            return false;
+        }
+        $.ajax({
+            type:'post',
+            url:'/index.php?c=manual&a=search',
+            data:{keyword:keyword,belong:belong},
+            success:function (rtn) {
+                if(rtn.status===undefined){
+                    rtn=JSON.parse(rtn);
+                }
+                if(rtn.data.res[0]!== undefined && rtn.data.res[0]!==''){
+                    var li="";
+                    // result
+                    $.each(rtn.data.res,function (i,val) {
+                        var title=val['name'].replace(new RegExp(keyword),"<span class='red'>"+keyword+"</span>");
+                        li+="<li class='result-li' onclick='getcontent("+val['id']+")'>"+title+"</li>";
+                    });
+                    $('.result ul').html(li);
+                    /*var pages=rtn.data.num;
+                    if(pages>1){
+                        var p="";
+                        for (var i=0;i<pages && i<10;i++){
+                            p+="<span>"+i+"</span>";
+                        }
+                        $('.result').append(p);
+                    }*/
+                }else {
+                    $('.result ul').html('无相关搜索');
+                }
+
+
+
+            },
+            error:function (e) {
+                alert('出错啦');
+            }
+
+        },'json');
+
+
+    });
+
+</script>
+<script src="<?=Pcommon?>/js/jtree.js"></script>
+<script src="<?=Pcommon?>/js/uitool.js"></script>
+<script src="<?=Pcommon?>/js/gettree.js"></script>

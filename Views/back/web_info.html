@@ -1,0 +1,185 @@
+<?php include_once Vback."/public/header.html";?>
+<script type="text/javascript" src="/Views/kindeditor-4.1.7/kindeditor-min.js"></script>
+    <section class="wrapper">
+    <div class="form-w3layouts">
+        <!-- page start-->
+        <!-- page start-->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <div class="toolbarTab">
+                        <ul id="tabs">
+                            <?php
+                            $tabs_glue="";
+                            $class="on";
+                            foreach($arr as $tabs){
+                                echo $tabs_glue;
+                                echo '<li  onclick="tabs(\'tabs\',this);" class="'.$class.' tabsli"><a href="javascript:;">'.$tabs.'</a></li>';
+                                $tabs_glue='<li class="line"> - </li>';
+                            $class="";
+                            }
+                             ?>
+
+                        </ul>
+                    </div>
+                    <header class="panel-heading">
+                      网站信息配置--基础配置
+                    </header>
+                    <div class="panel-body webconfig_form">
+                        <form class="form-horizontal bucket-form addform" method="post" action="index.php?c=back&a=saveweb_info" enctype="multipart/form-data" onsubmit="return sureform();">
+                            <?php
+                            foreach($arr_oth[0] as $row){
+                            ?>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3"><?=$row['varinfo']?></label>
+                                <div class="col-lg-6">
+                                    <div class=" m-bot15">
+
+                            <?php
+                                	switch($row['vartype'])
+                                        {
+                                            case 'string':
+                                            case 'int':
+                                            echo '<input type="text" class="form-control" name="'.$row['varname'].'"  value="'.$row['varvalue'].'">';
+                                             break;
+                                            case 'text':
+                                            echo '   <textarea type="text" class="form-control input-lg" name="'.$row['varname'].'">'.$row['varvalue'].'</textarea>';
+
+                                            break;
+                                            case 'boolean':
+                                            if($row['varvalue'] == 'Y')
+                                            {
+                                            $checked_y = 'checked="checked"';
+                                            $checked_n = '';
+                                            }
+                                            else
+                                            {
+                                            $checked_n = 'checked="checked"';
+                                            $checked_y = '';
+                                            }
+                                            echo '<input type="radio" name="'.$row['varname'].'" id="'.$row['varname'].'" value="Y" '.$checked_y.' /> 是 &nbsp;';
+                                            echo '<input type="radio" name="'.$row['varname'].'" id="'.$row['varname'].'" value="N" '.$checked_n.' /> 否';
+                                        break;
+                                        default:
+                                        echo '没有获取到类型';
+                                        break;
+                                            }?>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php
+                            }
+
+                            ?>
+
+
+
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3"></label>
+                                <div class="col-lg-3">
+                                    <div class="input-group m-bot15">
+                                        <input type="submit" class="form-control btn-success add-btn" value="提交">
+                                        <input type="hidden" name="action" value="update">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="input-group m-bot15">
+                                        <a  class="btn btn-default form-control" href="javascript:history.back(1);">返回</a>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </form>
+                        <form action="index.php?c=back&a=saveweb_info"  class="form-horizontal bucket-form addform" method="post">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">变量名称</label>
+                                <div class="col-lg-6">
+                                    <div class=" m-bot15">
+                                        <input type="text" class="form-control" name="varname" placeholder="变量名称" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">参数说明</label>
+                                <div class="col-lg-6">
+                                    <div class=" m-bot15">
+                                        <input type="text" class="form-control" name="varinfo" placeholder="参数说明" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">变量值</label>
+                                <div class="col-lg-6">
+                                    <div class=" m-bot15">
+                                        <input type="text" class="form-control" name="varvalue" placeholder="变量值" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">变量类型</label>
+                                <div class="col-lg-6">
+                                    <div class=" m-bot15">
+                                       <input name="vartype" value="string" type="radio">&nbsp;文本 &nbsp;&nbsp;&nbsp;
+                                       <input name="vartype" value="int" type="radio">&nbsp;数字&nbsp;&nbsp;&nbsp;
+                                        <input name="vartype" value="boolean" type="radio">&nbsp;布尔(Y/N)&nbsp;&nbsp;&nbsp;
+                                        <input name="vartype" value="text" type="radio">&nbsp;多行文本&nbsp;&nbsp;&nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">所属组</label>
+                                <div class="col-lg-6">
+                                    <div class=" m-bot15">
+                                      <select name="vargroup">
+                                          <option value="0">基本类型</option>
+                                      </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3"></label>
+                                <div class="col-lg-3">
+                                    <div class="input-group m-bot15">
+                                        <input type="submit" class="form-control btn-success add-btn" value="提交">
+                                        <input type="hidden" name="action" value="add">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="input-group m-bot15">
+                                        <a  class="btn btn-default form-control" href="javascript:history.back(1);">返回</a>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+                        </form>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- page end-->
+    </div>
+</section>
+<?php include_once Vback."/public/footer.html";?>
+
+<script type="text/javascript">
+    /*表单显示隐藏*/
+    function tabs(tabs,obj) {
+        var index=$(obj).index()/2;
+        var text=$(obj).text();
+        $("#tabs .tabsli").removeClass("on");
+        $($("#tabs .tabsli").eq(index)).addClass("on");
+        $(".webconfig_form form").hide();
+        $($(".webconfig_form form").eq(index)).show();
+        $(".panel-heading").text(text);
+
+    }
+
+</script>
+

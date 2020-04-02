@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><?=$arr['title']?></title>
+    <link rel="stylesheet" href="<?=PUBLIC_s?>/common/css/preview.css">
+</head>
+<body>
+<?php include_once "header.html"; ?>
+    <div class="main">
+        <h1><?=$arr['title']?></h1>
+        <div class="content">
+            <div class="info"><span>所属类型：<?=$arr['type'];?></span><span>发布时间：<?=date("Y-m-d h:i:s",$arr['posttime']);?></span></div>
+            <div class="description"><?=$arr['remark'];?></div>
+            <img src="<?=$arr['url']?>">
+        </div>
+
+    </div>
+<div class="bg">
+    <div class="img"></div>
+    <!--<img src="<?=PUBLIC_s?>/common/images/bg2.jpg">-->
+</div>
+
+<script src="<?=Pback?>/js/jquery.min.js"></script>
+
+</body>
+</html>

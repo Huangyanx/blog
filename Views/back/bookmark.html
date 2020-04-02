@@ -1,0 +1,171 @@
+<?php include_once Vback."/public/header.html";?>
+    <section class="wrapper">
+        <div class="table-agile-info">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    网址收藏列表
+                </div>
+                <div class="row w3-res-tb">
+                    <?php
+
+                     function tree1html($tree,$glue=''){
+                         if(!empty($glue)){$glue="&nbsp;&nbsp;".$glue;}//多维累加
+
+                            foreach($tree as $leaf) {
+                               if(trim($leaf['parentid'])==0){$glue='';}//清空
+                                echo '<option value="'.$leaf['id'].'">'.$glue.$leaf['name'].'</option>';
+                        if(!empty($leaf['children'])){
+                        if(empty($glue)){$glue='&nbsp;|-';}
+                            tree1html($leaf['children'],$glue);
+                        }else{
+                            $glue='';//为了最后清空
+                        }
+                        }
+                    }
+                    ?>
+
+                    <div class="col-sm-5 m-b-xs">
+                        <select class="input-sm form-control w-sm inline v-middle" id="serach-select">
+                            <?=tree1html($arr_oth['tree']);?>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <a href="/index.php?c=back&a=addurl" class="btn btn-success add">添加</a>
+                            <a href="/index.php?c=back&a=bookmark" class="btn btn-success">查看全部</a>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <input type="text" class="input-sm form-control search-txt" placeholder="用空格或者“、”隔开两个以上的关键字">
+                            <span class="input-group-btn">
+                    <button class="btn btn-sm btn-default search-txt" type="button">搜索</button>
+          </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped b-t b-light">
+                        <thead>
+                            <tr>
+                            <th >
+                                <label class="i-checks m-b-none">
+                                    <input type="checkbox" id="check_all"><i></i>  id
+                                </label>
+                            </th>
+                            <th>标题</th>
+                            <th>类型</th>
+                            <th>网址</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        foreach($arr as $val){
+                        ?>
+                        <tr>
+                            <td><label class="i-checks m-b-none"><input type="checkbox" class="check_id" name="check_id" value="<?=$val['id'];?>"><i></i> <?=$val['id'];?></label></td>
+                            <td><?=$val['title'];?></td>
+                            <td><?=$val['type'];?></td>
+                            <td><?=$val['url'];?></td>
+                            <td><?=$val['remarks'];?></td>
+                            <td>
+                                <a href="index.php?c=back&a=editurl&id=<?=$val['id'];?>" class="active" ui-toggle-class=""><i class="fa fa-edit text-success text-active"></i></a>
+                                <a href="<?=$val['url']?>" target="_blank" class="active" ui-toggle-class=""><i class="fa fa-eye text-success text-active"></i></a>
+                                <a href="javascript: dele_sing(<?=$val['id'];?>);" class="active" ui-toggle-class=""></i><i class="fa fa-times text-danger text"></i></a>
+                            </td>
+                        </tr>
+
+                        <?php
+                        }
+                           ?>
+
+                        </tbody>
+                    </table>
+                </div>
+                <footer class="panel-footer">
+                    <div class="row">
+
+                        <div class="col-sm-5 text-center">
+                            <a class="btn btn-danger delete" href="javascript:;">删除</a>
+                            <small class="text-muted inline m-t-sm m-b-sm">共 <?=$arr_oth['pagelist']['num'];?> 条记录<?=$arr_oth['pagelist']['pages'];?>页</small>
+                        </div>
+                        <div class="col-sm-7 text-right text-center-xs">
+                            <ul class="pagination pagination-sm m-t-none m-b-none">
+                                <li><a href="<?=$arr_oth['pagelist']['url']?>&page=1"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></a></li>
+                                <li><a href="<?=$arr_oth['pagelist']['p_pre']?>"><i class="fa fa-chevron-left"></i></a></li>
+                                <?php
+                                foreach($arr_oth['pagelist']['p_list'] as $val){
+                                    echo "<li><a href=".$arr_oth['pagelist']['url']."&page=".$val.">".$val."</a></li>";
+                                }
+                                ?>
+                                <li><a href="<?=$arr_oth['pagelist']['p_next']?>"><i class="fa fa-chevron-right"></i></a></li>
+                                <li><a href="<?=$arr_oth['pagelist']['url']?>&page=<?=$arr_oth['pagelist']['pages']?>"><i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i></a></li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </section>
+<?php include_once Vback."/public/footer.html";?>
+
+<script>
+    /*按类型搜索*/
+    $("#serach-select").change(function () {
+       //var val=($(this).find("option:selected").text().replace(/(\|-)+/g,'')).trim();
+        window.location.href="index.php?c=back&a=bookmark&kfiled=type&keyword="+$(this).val();
+    });
+    /*关键字搜索  根据标题和文件名*/
+    $(".search-txt").click(function () {
+        var k=$(".search-txt").val();
+        if(k!=''){
+            window.location.href="index.php?c=back&a=bookmark&keyword="+k;
+        }
+    });
+    $(".search-txt").keyup(function(event){
+        if(event.keyCode ==13){
+            $(".search-txt").trigger("click");
+        }
+    });
+    /*多选*/
+    $("#check_all").click(function () {
+        if($(this).is(":checked")){
+            $(".check_id").prop('checked',true);
+        }else {
+            $(".check_id").prop('checked',false);
+        }
+    });
+    /*批量删除*/
+    $(".delete").click(function () {
+        var id="(",glue='';//var upfile='';
+        $(".check_id").each(function (i,ele) {
+            if($(ele).is(":checked")){
+                id+=glue+$(ele).val();
+                //upfile+=glue+$(ele).parent().parent().next().next().text();
+                glue=",";
+            }
+        })
+        id+=")";
+        dele_sing(id);
+    });
+
+    /*删除   单个*/
+    function dele_sing(id) {
+        var sure=window.confirm("确认删除吗？");
+        if(sure){
+            $.get("index.php?c=back&a=deleurl",{id:id},function (rtn) {
+                // var res=$.parseJSON(rtn);
+                if(rtn.status){
+                    alert("删除成功");
+                    location.href="index.php?c=back&a=bookmark";
+                }else {
+                    alert("删除失败");
+                }
+            },'json');
+        }
+    }
+</script>

@@ -1,0 +1,205 @@
+<?php include_once Vback."/public/header.html";?>
+<script type="text/javascript" src="/Views/kindeditor-4.1.7/kindeditor-min.js"></script>
+<script type="text/javascript" src="/Views/kindeditor-4.1.7/lang/zh_CN.js"></script>
+    <section class="wrapper">
+    <div class="form-w3layouts">
+        <!-- page start-->
+        <!-- page start-->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                       修改文件
+                    </header>
+                    <div class="panel-body">
+                        <?php
+					
+                           function tree1html($tree,$glue='',$id){
+                                $glue=empty($glue)? '':"&nbsp;&nbsp;".$glue;//多维累加
+                                foreach($tree as $leaf) {
+                                    if(trim($leaf['parentid'])==0){$glue='';}//清空
+                                    $select=$id==trim($leaf['id'])? "selected='selected'":"";
+                                    echo '<option value="'.$leaf['id'].'"'.$select.'>'.$glue.$leaf['name'].'</option>';
+                                if(!empty($leaf['child'])){
+                                if(empty($glue)){$glue='&nbsp;|-';}
+                                tree1html($leaf['child'],$glue,$id);
+                                }else{
+                                $glue='';//为了最后清空
+                                }
+                                }
+                        }
+                        ?>
+
+                        <form class="form-horizontal bucket-form addform" method="post" action="index.php?c=back&a=savefile" enctype="multipart/form-data" onsubmit="return sureform();">
+							 <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">选择类型</label>
+                                <div class="col-lg-6 addtype">
+                                <select id="mySelect" name="type">
+                                   <?=tree1html($arr_oth,'',$arr['type']);?>
+                                </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">文件标题</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group m-bot15">
+                                        <input type="text" class="form-control" name="title" placeholder="Username" value="<?=$arr['title']?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">作者</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group m-bot15">
+                                        <input type="text" class="form-control" name="author" placeholder="Username" value="<?=$arr['author']?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">上传缩略图</label>
+                                <div class="col-lg-6">
+                                    <div class=" col-lg-6 m-bot15">
+                                        <input type="text" class="form-control upimg" name="upimgname" placeholder="Username" value="<?=$arr['upimg']?>">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="file" name="upimg">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">详情内容</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group input-group-lg m-bot15">
+                                        <textarea type="text" class="form-control input-lg kindeditor" name="content" id="content" placeholder=""><?=stripslashes($arr['content']);?></textarea>
+                                        <script>
+                                            var editor;
+                                            KindEditor.ready(function(K) {
+                                                editor = K.create('#content', {
+                                                    allowFileManager : true,
+                                                    width:'667px',
+                                                    height:'280px',
+                                                    extraFileUploadParams : {
+                                                        sessionid :  ''
+                                                    }
+                                                });
+
+                                            });
+                                        </script>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-6">
+                                    <div class="upfile uppict">  <input type="radio" name="isdir" value="0" <?php if($arr['is_dir']==0 ) echo "checked='checked'";?>>上传文件</div>
+                                    <div class="updir"> <input type="radio" name="isdir"  value="1" <?php if($arr['is_dir']==1 ) echo "checked='checked'";?>>上传文件夹</div>
+                                </div>
+                            </div>
+                            <div class="form-group " id="upfile">
+                                <label class="col-sm-3 control-label col-lg-3">上传文件</label>
+                                <div class="col-lg-6">
+                                    <div class=" col-lg-6 m-bot15">
+                                        <input type="text" class="form-control uppicname" value="<?=$arr['upfile']?>" name="upfile_s"  placeholder="文件名">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="file" name="upfile_s_up" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group"  id="updir">
+                                <label class="col-sm-3 control-label col-lg-3">上传文件夹</label>
+                                <div class="col-lg-6">
+                                    <div class=" col-lg-6 m-bot15">
+                                        <input type="text" class="form-control" id="upfilename" name="upfilename"  placeholder="文件名" value="<?=$arr['upfile']?>">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <input type="file" name="upfile[]"  id="folderInput"  multiple="true" webkitdirectory="true" directory="true">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">是否列出所有文件（预览时）</label>
+                                <div class=" col-lg-6 m-bot15">
+                                   <input type="radio" value="1" name="is_show" <?php if($arr['is_show']==1 ) echo "checked='checked'";?> >是
+                                   <input type="radio" value="0" name="is_show" <?php if($arr['is_show']==0) echo "checked='checked'";?>>否
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">备注</label>
+                                    <div class=" col-lg-6 m-bot15">
+                                       <textarea cols="80" rows="4" name="remarks"><?=$arr['remarks']?></textarea>
+                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3">浏览次数</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group m-bot15">
+                                        <input type="text" class="form-control" name="hits" placeholder="" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label col-lg-3"></label>
+                                <div class="col-lg-3">
+                                    <div class="input-group m-bot15">
+                                        <input type="submit" class="form-control btn-success add-btn" value="提交">
+                                        <input type="hidden" name="action" value="edit">
+                                        <input type="hidden" name="id" value="<?=$arr['id']?>">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="input-group m-bot15">
+                                        <a  class="btn btn-default form-control" href="javascript:history.back(1);">返回</a>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- page end-->
+    </div>
+</section>
+<?php include_once Vback."/public/footer.html";?>
+<script src="<?=Pback?>/js/filedrag.js"></script>
+<script type="text/javascript">
+    /*缩略图名称*/
+    $("input[name='upimg']").change(function () {
+        $(".upimg").val(this.files[0].name);
+        //console.log(this.files);
+    });
+    //添加文件确认
+    function sureform() {
+
+        if(($("#mySelect").val()!='')&&$("#content")!=''){
+            return true;
+
+        }else {
+            alert("请填写完整类型和内容");
+            return false;
+        }
+
+    }
+    /*上传文件或者文件夹，2选1*/
+    $(".upfile").click(function () {
+        $(this).find("input").prop('checked',true);
+        $('.isshow').prop('checked',true);
+        $(".updir").find("input").prop('checked',false);
+        $("#upfile").slideDown();
+        $("#updir").hide();
+    });
+    $(".updir").click(function () {
+        $(this).find("input").prop('checked',true);
+        $(".upfile").find("input").prop('checked',false);
+        $("#updir").slideDown();
+        $("#upfile").hide();
+    })
+
+
+</script>
+

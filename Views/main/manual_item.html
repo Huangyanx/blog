@@ -1,0 +1,132 @@
+<?php include_once Vmain."/header.html";?>
+<link rel="stylesheet" href="<?=Pback?>/js/tree/bootstrapStyle.css" type="text/css">
+<script type="text/javascript" src="<?=Pcommon?>/js/jquery.ztree.core.min.js"></script>
+
+<script>
+    var arr=<?php echo json_encode($arr)?>;
+    var zNodes=[];
+    var belong="<?php echo $belong; ?>",mid="<?php echo $mid; ?>",selected_pid='';
+    var len=arr.length;
+    for(var i=0;i<len;i++){
+        if(mid==arr[i]['id']) {selected_pid=arr[i]['parentid'];var is_open=true;}else {var is_open=false;}
+        var obj={'id':arr[i]['id'],'pId':arr[i]['parentid'],'name':arr[i]['name'],'url':"/main/manual/?belong="+belong+"&mid="+arr[i]['id'],"target":"_self",open :is_open};
+        zNodes.push(obj);
+    }
+
+    //遍历，将选中的节点 所有父节点也展开
+    var kk=0;
+    setOpen(zNodes);
+    function setOpen(obj) {
+        if(selected_pid!=0 && selected_pid!==''){
+            for (var i in obj){
+                kk++;
+                if(i!==undefined){
+                    if(obj[i]['id']===selected_pid){
+                        obj[i]['open']=true;
+                        if(obj[i]['pId']!==0 && obj[i]['pId']!==null) {
+                            selected_pid=obj[i]['pId'];
+                            setOpen(obj);
+                        }
+                        break;
+                    }
+
+                }
+            }
+        }
+
+    }
+    //console.log(kk);
+    //console.log(zNodes);
+    //console.log(selected_pid);
+    var setting = {
+        view: {
+            selectedMulti: false,
+            showTitle:true
+        },
+        check: {
+            enable: false
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        edit: {
+            enable: false
+        },
+    };
+
+    $(document).ready(function(){
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+
+    });
+
+</script>
+<div class="mainContent">
+            <div class="container">
+                <aside id="manual_left">
+                    <section class="accordion aside-list">
+                        <h3 class="aside-title"><?=$title1?></h3>
+                        <div class="aside-cont accordionContent">
+
+                                <div class="form-group">
+                                    <input class="input_control keyword" placeholder="请输入关键词">
+                                    <select class="input_control search-belong">
+                                        <option value="all">全部</option>
+                                        <?php
+                                      foreach($manual_list as $val){
+                                    ?>
+                                         <option value="<?php echo $val['name']; ?>" <?php if($belong===$val['name']) echo "selected"; ?>><?php echo $val['name'];  ?></option>
+                                        <?php } ?>
+
+                                    </select>
+                                    <input type="button" value="搜索" class="search-btn">
+                                </div>
+                                <div class="result">
+                                    <ul>
+
+                                    </ul>
+                                </div>
+
+                            <ul id="treeDemo" class="ztree"></ul>
+
+
+                        </div>
+                    </section>
+                </aside>
+                <div class="blogitem">
+                    <article>
+                        <div class='index-list'>
+                            <h1 class="lists-title">
+                                <a href="javascript:;" ><span class="iconfont icon-wenzhang2"></span>
+                                    <?php if(!empty($manual_content['title'])) echo $manual_content['title'] ?>
+                                    </a>
+                            </h1>
+                            <div class="lists">
+                                <div class="text">
+                                    <div class="info">
+                                        <span class="mu-ml-clock"><i class="iconfont icon-zlicondate01"></i>最后更新： <?=date('Y-m-d H:i:s',$manual_content['posttime']);?></span>
+                                        <span class="mu-ml-eye"><i class="iconfont icon-liulan"></i>阅读： <?=$manual_content['hits']?>次</span>
+                                    </div>
+                                </div>
+                                <?php
+                                   if(!empty($manual_content['remarks'])){
+                                        echo '<div class="manual_description">'.$manual_content['remarks'].'</div>';
+                                        }
+                                ?>
+                                <?=stripslashes($manual_content['content'])?>
+                            </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+</div>
+
+<?php include_once Vmain."/footer.html";?>
+<script src="<?=Pmain?>/js/manual_item.js"></script>
+
+
+

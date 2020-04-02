@@ -1,0 +1,38 @@
+<?php include_once Vmain."/header.html";?>
+ <div class="mainContent">
+    <div class="container">
+        <div class="blogitem">
+          <article>
+            <div class='index-list'>
+              <h1 class="lists-title">
+                <a href="javascript:;" ><span class="iconfont icon-wenzhang2"></span>手册</a>
+              </h1>
+              <div class="lists">
+                <?php
+                  foreach($manual_list as $val){
+                ?>
+                <div class="manual_one col-51">
+                  <a href="<?=$val['linkurl']?>" target="_blank">
+                    <div class="wrap">
+                      <div class="img"><img src="<?=Pcommon?>/images/manual_icon.png"></div>
+                      <h3><span><?=$val['name']?></span></h3>
+                      <div class="clear"></div>
+                    </div>
+                  </a>
+
+                </div>
+
+                <?php }?>
+
+                <div class="clear"></div>
+              </div>
+
+            </div>
+          </article>
+
+
+        </div>
+        <?php include_once Vmain."/left.html";?>
+    </div>
+ </div>
+<?php include_once Vmain."/footer.html";?>

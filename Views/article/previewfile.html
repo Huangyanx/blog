@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><?=$arr['title']?></title>
+    <link rel="stylesheet" href="<?=PUBLIC_s?>/common/css/preview.css">
+</head>
+<body>
+<?php include_once "header.html"; ?>
+    <div class="main">
+        <h1><?=$arr['title']?></h1>
+        <div class="content">
+            <div class="info"><span>所属类型：<?=$arr['type'];?></span><span>作者：<?=$arr['author'];?></span><span>发布时间：<?=date("Y-m-d h:i:s",$arr['posttime']);?></span><span>浏览次数：<?=$arr['hits'];?></span></div>
+
+            <?=stripslashes($arr['content']);?>
+        </div>
+
+    </div>
+<div class="bg">
+    <div class="img"></div>
+    <!--<img src="<?=PUBLIC_s?>/common/images/bg2.jpg">-->
+</div>
+
+<script src="<?=Pback?>/js/jquery.min.js"></script>
+<script>
+    var tool="<div class='tool'><a href='javascript:;' class='Fullscreen' title='全屏'>全屏</a> <a href='javascript:;' class='openpre' title='展开'>展开</a> </div>";
+    $(".main pre").append(tool);
+    /*收缩、展开*/
+    $(".openpre").click(function () {
+        if($(this).text()=='展开'){
+            $(this).parent().parent().css('height','auto');
+            $(this).text('收缩');
+        }else {
+            $(this).parent().parent().css('height','150px');
+            $(this).text('展开');
+        }
+    });
+    /*全屏操作*/
+    $(".Fullscreen").click(function () {
+        var h=window.innerHeight-60 ;//去掉padding、margin
+        if($(this).data("full")){
+            $(this).parent().parent().css({
+                'width':'auto',
+                'position': 'relative',
+                'z-index':'',
+                'height':'150px',
+            });
+            $(this).data("full",0);
+        }else{
+            $(this).parent().parent().css({
+                'width':'98%',
+                'height':h,
+                'position': 'absolute',
+                'left': '0',
+                'top':0,
+                'z-index':'99999999999',
+
+            });
+            $(this).data("full",1);
+        }
+
+    });
+
+</script>
+</body>
+</html>
